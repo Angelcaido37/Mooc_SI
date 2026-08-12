@@ -1,14 +1,18 @@
+/*
+ * Copie aquí la configuración WEB de su proyecto Firebase.
+ * Este archivo puede ser público: no incluya claves privadas ni secretos.
+ */
 window.NEXUS_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyA3ROtVN1o98oI-dhyIapRkIxbk6FBgXRg",
-  authDomain: "mooc-505320.firebaseapp.com",
-  projectId: "mooc-505320",
-  storageBucket: "mooc-505320.firebasestorage.app",
-  messagingSenderId: "215429558505",
-  appId: "1:215429558505:web:32ffb33526adc9f50a8078"
+  apiKey: "REEMPLAZAR",
+  authDomain: "REEMPLAZAR.firebaseapp.com",
+  projectId: "REEMPLAZAR",
+  storageBucket: "REEMPLAZAR.firebasestorage.app",
+  messagingSenderId: "REEMPLAZAR",
+  appId: "REEMPLAZAR"
 };
 
 window.NEXUS_PLATFORM = {
-  demoMode: false,
+  demoMode: true,
   functionsRegion: "us-central1",
   classroomEnabled: false
 };
