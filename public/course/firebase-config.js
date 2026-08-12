@@ -1,7 +1,4 @@
-/*
- * Copie aquí la configuración WEB de su proyecto Firebase.
- * Este archivo puede ser público: no incluya claves privadas ni secretos.
- */
+npm install firebase
 window.NEXUS_FIREBASE_CONFIG = {
   apiKey: "REEMPLAZAR",
   authDomain: "REEMPLAZAR.firebaseapp.com",
