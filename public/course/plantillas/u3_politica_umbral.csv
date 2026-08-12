@@ -1,0 +1,7 @@
+escenario,umbral,verdaderos_positivos,falsos_positivos,falsos_negativos,verdaderos_negativos,costo_fp,costo_fn,carga_revision,recomendacion
+A,,,,,,,,,
+B,,,,,,,,,
+C,,,,,,,,,
+zona_no_activar,0.00-,,,,,,,,
+zona_revision,,,,,,,,,
+zona_activar,,,,,,,,,

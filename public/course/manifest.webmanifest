@@ -1,0 +1,10 @@
+{
+  "name": "Misión NEXUS: Sistemas Inteligentes",
+  "short_name": "NEXUS IA",
+  "description": "Curso universitario gamificado de Sistemas Inteligentes",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#071329",
+  "theme_color": "#071329",
+  "lang": "es-MX"
+}

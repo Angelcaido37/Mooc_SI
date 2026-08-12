@@ -1,0 +1,7 @@
+id,tipo,componente,precondicion,entrada,resultado_esperado,resultado_observado,estado,evidencia,riesgo,accion_correctiva,responsable
+N01,normal,,,,,,,,,,
+N02,normal,,,,,,,,,,
+L01,limite,,,,,,,,,,
+L02,limite,,,,,,,,,,
+A01,adversarial,,,,,,,,,,
+A02,adversarial,,,,,,,,,,

@@ -1,0 +1,61 @@
+unidad;tipo;pregunta;opcion_a;opcion_b;opcion_c;opcion_d;correcta;retroalimentacion
+1;conceptual;¿Qué diferencia a un modelo de un sistema?;El color de la interfaz;El sistema integra modelo reglas personas y operación;El modelo siempre usa IA generativa;No existe diferencia;B;Un sistema incorpora contexto componentes decisiones y responsabilidades.
+1;aplicación;Un recordatorio con fecha fija se resuelve mejor con…;Una regla de calendario;Un agente autónomo;Reconocimiento facial;Un modelo visión-lenguaje;A;Use la solución más simple que satisface el propósito.
+1;conceptual;En PEAS la P significa…;Predicción;Programación;Medida de desempeño;Privacidad;C;El desempeño define cómo se juzga el éxito del agente.
+1;conceptual;¿Cuál es un actuador digital?;Una cámara;Un formulario de entrada;Enviar una alerta;Un archivo de datos;C;El actuador materializa una acción.
+1;aplicación;Un entorno cambia mientras el agente razona. Es…;Estático;Dinámico;Episódico;Totalmente observable;B;El cambio durante la deliberación caracteriza un entorno dinámico.
+1;conceptual;Un agente reactivo…;Planea siempre a largo plazo;Responde al estado actual mediante reglas;No tiene sensores;Entrena modelos;B;La reacción vincula perceptos actuales con acciones.
+1;ética;Supervisión humana significativa exige…;Un botón decorativo;Tiempo información competencia y autoridad;Aceptar términos;Una firma automática;B;La persona debe poder cuestionar y detener.
+1;aplicación;¿Qué formulación delimita mejor un asistente?;Resolver todo trámite;Responder normativa vigente con citas sin autorizar trámites;Ser inteligente;Ayudar a todos;B;El alcance específico facilita evaluación y control.
+1;conceptual;La IA simbólica se apoya en…;Hechos reglas y relaciones explícitas;Sólo millones de imágenes;Temperatura de generación;Sensores biométricos;A;Su conocimiento puede inspeccionarse como símbolos.
+1;aplicación;¿Cuándo conviene no usar IA?;Cuando una regla estable resuelve el caso;Cuando existen usuarios;Cuando hay computadora;Nunca;A;Añadir IA sin valor aumenta complejidad y riesgo.
+2;conceptual;Una proposición es…;Una relación con variables necesariamente;Un enunciado con valor de verdad;Un archivo multimedia;Una probabilidad calibrada;B;La lógica proposicional trabaja con enunciados verdaderos o falsos.
+2;conceptual;Ausencia de evidencia de P implica…;Siempre no P;Siempre P;Desconocido salvo convención justificada;Borrar P;C;No conocer no equivale a negar.
+2;aplicación;El encadenamiento hacia adelante inicia con…;Una meta;Hechos disponibles;Una imagen;Una función heurística;B;Aplica reglas para obtener consecuencias.
+2;aplicación;El encadenamiento hacia atrás es útil para…;Probar una meta específica;Generar audio;Comprimir datos;Diseñar colores;A;Descompone una meta en submetas.
+2;conceptual;Una tabla de decisión ayuda a detectar…;Contradicciones y combinaciones faltantes;Tokens;Píxeles;Embeddings;A;Enumera condiciones y acciones sistemáticamente.
+2;conceptual;BFS usa normalmente…;Una pila;Una cola;Un LLM;Una matriz de costos;B;La cola conserva expansión por niveles.
+2;conceptual;DFS puede fallar porque…;Siempre usa mucha memoria;Puede profundizar indefinidamente y no hallar la ruta óptima;No explora nodos;Sólo sirve con pesos;B;Sin límites puede perderse en una rama.
+2;conceptual;En A* f(n) es…;g(n)+h(n);g(n)-h(n);Sólo h(n);Número de hijos;A;Combina costo acumulado y estimación.
+2;conceptual;Una heurística admisible…;Sobreestima siempre;Nunca sobreestima el costo real al objetivo;Es aleatoria;Elimina el objetivo;B;Esta propiedad sostiene optimalidad de A* bajo condiciones adecuadas.
+2;aplicación;En un híbrido seguro el LLM puede…;Proponer candidatos y las reglas validar restricciones;Eliminar todas las reglas;Autorizarse a sí mismo;Ocultar desacuerdos;A;La división de funciones conserva verificabilidad.
+3;conceptual;Un score es siempre una probabilidad;Verdadero;Falso;Sólo si es mayor a .5;Sólo en imágenes;B;Puede ser una escala útil sin interpretación probabilística.
+3;conceptual;Calibración significa…;Probabilidad predicha coherente con frecuencia observada;Cero errores;Alta velocidad;Umbral .5;A;Calibración da sentido frecuentista a probabilidades.
+3;aplicación;Al bajar un umbral suele…;Reducirse todo positivo;Aumentar detección y falsas alertas;Eliminar incertidumbre;Mejorar datos;B;Cambia el intercambio entre tipos de error.
+3;conceptual;Un falso negativo es…;Caso negativo marcado positivo;Caso positivo marcado negativo;Una entrada vacía;Una regla duplicada;B;Se omite un caso que sí presenta el evento.
+3;ética;La matriz de costos debe considerar…;Sólo dinero;Consecuencias para personas y operación;Sólo precisión;Colores;B;Los errores tienen impactos múltiples y distribuidos.
+3;aplicación;Una zona de abstención es apropiada cuando…;Falta evidencia o el caso está fuera de alcance;Se desea responder siempre;El dato es perfecto;No existe supervisión;A;La abstención evita convertir incertidumbre en falsa certeza.
+3;conceptual;Deriva de datos es…;Cambio en distribución de entradas;Cambio de contraseña;Cambio de logo;Aumento de memoria;A;La población o captura pueden cambiar.
+3;conceptual;Deriva de concepto es…;Cambio en relación entre entradas y resultado;Cambio de idioma de interfaz;Cambio de servidor;Cambio de color;A;El patrón objetivo deja de comportarse igual.
+3;aplicación;Si las alertas superan capacidad humana…;La política debe considerar carga y ajustar;Debe ocultarse;Debe aumentar autonomía;No importa;A;Una política no es útil si no puede operarse.
+3;ética;¿Quién responde por una decisión automatizada?;El modelo;Las personas y organización con roles asignados;El archivo;Nadie;B;La responsabilidad no se delega a un algoritmo.
+4;conceptual;Un sensor produce…;Una medición sujeta a ruido;Verdad perfecta;Una decisión jurídica;Una explicación;A;La señal requiere transformación e interpretación.
+4;conceptual;Clasificación visual…;Asigna etiqueta global;Localiza cada objeto necesariamente;Procesa sólo audio;Garantiza identidad;A;La detección agrega localización.
+4;aplicación;Para probar visión conviene variar…;Iluminación ángulo fondo y oclusión;Sólo el nombre del archivo;Sólo el color de botón;Nada;A;El contexto de captura afecta desempeño.
+4;ética;¿Qué inferencia debe evitarse sin evidencia sólida?;Número de píxeles;Emoción o intención desde apariencia;Resolución;Formato;B;Son inferencias sensibles y frecuentemente inválidas.
+4;accesibilidad;Una interfaz por voz debe ofrecer…;Canal de texto equivalente;Sólo un acento;Grabación indefinida;Mayor volumen obligatorio;A;La alternativa evita exclusión.
+4;conceptual;Fusión temprana combina…;Representaciones antes de decidir;Sólo decisiones finales;Usuarios;Permisos;A;La tardía combina salidas posteriores.
+4;aplicación;Si dos modalidades se contradicen…;Debe pedirse aclaración o abstenerse según política;Se oculta;Se promedia siempre;Se elige al azar;A;La contradicción debe conservarse y gestionarse.
+4;privacidad;Minimización de datos indica…;Capturar sólo lo necesario;Guardar todo;Compartir por defecto;Identificar siempre;A;Menos datos reducen exposición.
+4;ética;Consentimiento por sí solo…;Justifica cualquier biometría;No corrige una finalidad innecesaria o desproporcionada;Elimina sesgo;Garantiza seguridad;B;También se requiere necesidad proporcionalidad y alternativa.
+4;aplicación;Para contar ocupación se prefiere…;Sensor anónimo si cumple el propósito;Reconocimiento facial siempre;Guardar rostros;Inferir identidad;A;La solución menos invasiva reduce riesgo.
+5;conceptual;Un LLM genera mediante…;Estimación sucesiva de tokens;Consulta obligatoria a fuente oficial;Demostración lógica perfecta;Ejecución automática;A;La fluidez no garantiza verdad.
+5;conceptual;La ventana de contexto…;Es ilimitada;Limita información disponible en una interacción;Es un sensor;Es una rúbrica;B;El contexto tiene capacidad finita.
+5;aplicación;Una instrucción robusta incluye…;Tarea alcance fuentes formato y abstención;Sólo un rol;Muchos adjetivos;Datos sensibles;A;Las restricciones y criterios permiten verificar.
+5;conceptual;Salida estructurada garantiza verdad;Verdadero;Falso;Sólo JSON;Sólo con RAG;B;Facilita validación de forma no de contenido.
+5;conceptual;Un embedding representa…;Texto como vector para similitud;Una contraseña;Un sensor;Una rúbrica;A;La cercanía aproxima relación semántica.
+5;aplicación;Fragmentos demasiado pequeños…;Pueden perder contexto;Siempre mejoran;Eliminan citas;Aumentan autoridad;A;La unidad semántica debe conservarse.
+5;conceptual;RAG combina…;Recuperación y generación condicionada;Sólo generación;Sólo reglas;Sólo sensores;A;Aporta evidencia externa al contexto.
+5;aplicación;Si no existe respuesta en corpus…;Debe abstenerse o escalar;Debe inventar;Debe citar otro tema;Debe ocultarlo;A;La falta de fundamento es una salida legítima.
+5;seguridad;La autorización de tool calling se valida…;En la capa de ejecución;Sólo en el prompt;En la temperatura;No se valida;A;El modelo no es frontera de seguridad.
+5;seguridad;Una inyección indirecta aparece en…;Contenido recuperado que intenta dar instrucciones;Sólo el usuario;Sólo código fuente;La rúbrica;A;Los datos no confiables pueden contener órdenes maliciosas.
+6;conceptual;Un requisito verificable describe…;Comportamiento observable y condición;Ser innovador;Ser inteligente;Gustar a todos;A;Debe poder vincularse con una prueba.
+6;aplicación;Una prueba normal representa…;Uso previsto;Sólo ataque;Sólo máximo;Un fallo de red;A;Las pruebas límite y adversariales cubren otras condiciones.
+6;aplicación;Una prueba límite explora…;Bordes y condiciones extremas;Sólo portada;Promedio;Color;A;Campos vacíos máximos y baja calidad son ejemplos.
+6;seguridad;Red teaming busca…;Descubrir fallos y documentar mitigación;Aumentar XP;Ocultar defectos;Atacar producción;A;Debe realizarse en entorno controlado.
+6;conceptual;Fallo seguro significa…;Degradar sin aumentar daño;Continuar siempre;Borrar datos;Ocultar al usuario;A;Contención y recuperación son centrales.
+6;gobernanza;Govern trata principalmente de…;Roles políticas y rendición de cuentas;Sólo métricas;Sólo contexto;Sólo pruebas;A;Establece la estructura de gobernanza.
+6;gobernanza;Map identifica…;Contexto actores e impactos;Sólo código;Sólo costo;Sólo interfaz;A;Comprende dónde y a quién afecta el sistema.
+6;gobernanza;Measure reúne…;Métodos métricas y evidencia;Contraseñas;Colores;Usuarios nuevos;A;Analiza características de confianza y riesgo.
+6;gobernanza;Manage se ocupa de…;Priorizar responder y monitorear riesgos;Diseñar logo;Crear tokens;Clasificar imágenes;A;Convierte hallazgos en decisiones y controles.
+6;autoría;La mejor comprobación individual es…;Explicar decisiones e implementar una modificación en vivo;Una portada;Un texto extenso;No declarar IA;A;La capacidad de intervenir demuestra comprensión.

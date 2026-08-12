@@ -1,0 +1,11 @@
+seccion,pregunta,respuesta,evidencia_o_fuente
+Problema,¿Qué necesidad concreta se atenderá?,,
+Usuario,¿Quién experimenta la necesidad?,,
+Pertinencia,¿Por qué IA y no una regla o proceso convencional?,,
+Desempeño,¿Qué dos métricas observables definen éxito?,,
+Entorno,¿Qué actores objetos normas y condiciones rodean al agente?,,
+Actuadores,¿Qué acciones concretas puede ejecutar?,,
+Sensores,¿Qué entradas concretas puede observar?,,
+Límite,¿Qué acción está prohibida?,,
+Abstención,¿Cuándo debe reconocer que no puede decidir?,,
+Supervisión,¿Quién puede revisar corregir o detener?,,

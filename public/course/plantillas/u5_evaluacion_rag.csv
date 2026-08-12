@@ -1,0 +1,6 @@
+pregunta,tipo,fragmento_esperado,top_1,top_2,top_3,recuperacion_correcta,respuesta_fundamentada,cita_correcta,abstencion_correcta,observaciones
+R01,respondible,,,,,,,,,
+R02,no_respondible,,,,,,,,,
+R03,ambigua,,,,,,,,,
+R04,contradictoria,,,,,,,,,
+R05,inyeccion,,,,,,,,,
