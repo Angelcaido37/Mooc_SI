@@ -1,0 +1,6 @@
+{
+  "hosting": {"public":"public/course","ignore":["firebase.json","**/.*","**/node_modules/**"],"rewrites":[{"source":"/api/classroom/callback","function":{"functionId":"classroomOAuthCallback","region":"us-central1"}}]},
+  "firestore":{"rules":"firestore.rules"},
+  "storage":{"rules":"storage.rules"},
+  "functions":[{"source":"functions","codebase":"default"}]
+}

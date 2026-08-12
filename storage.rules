@@ -1,0 +1,7 @@
+rules_version = '2';
+service firebase.storage { match /b/{bucket}/o {
+  function signedIn(){ return request.auth != null; }
+  function owner(uid){ return signedIn() && request.auth.uid == uid; }
+  function teacher(){ return signedIn() && firestore.get(/databases/(default)/documents/roles/$(request.auth.uid)).data.role == 'teacher'; }
+  match /evidence/{uid}/{file=**} { allow read: if owner(uid) || teacher(); allow write: if owner(uid) && request.resource.size < 20 * 1024 * 1024; }
+} }
