@@ -1,4 +1,6 @@
-# Misión NEXUS v7 híbrida completa · Sistemas Inteligentes
+# Misión NEXUS v8 híbrida visible · Sistemas Inteligentes
+
+Esta versión conserva las 30 lecciones híbridas de NEXUS 7 y hace visible la experiencia visual–textual–interactiva desde el Centro de mando y la Ruta de aprendizaje.
 
 Plataforma universitaria de 96 horas con portales protegidos para docente y estudiante.
 
