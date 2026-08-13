@@ -1,4 +1,4 @@
-const CACHE = "nexus-v8-hibrido-visible";
+const CACHE = "nexus-v9-presentaciones-explicativas";
 const FILES = [
   "./", "./index.html", "./estudiante.html", "./docente.html", "./styles.css", "./portal.css", "./login.css", "./v4.css", "./visual-lessons.css", "./app.js", "./teacher-app.js", "./student-cloud.js", "./course-data.js", "./teaching-data.js", "./teacher-detail-data.js", "./technical-labs-data.js", "./visual-lessons-data.js", "./game-data.js", "./firebase-config.js", "./platform.js", "./classroom-links.js", "./manifest.webmanifest",
   "./visuales/unidad-1/01-ia-automatizacion.webp", "./visuales/unidad-1/02-enfoques-ia.webp", "./visuales/unidad-1/03-ciclo-agente.webp", "./visuales/unidad-1/04-peas.webp", "./visuales/unidad-1/05-supervision-humana.webp",

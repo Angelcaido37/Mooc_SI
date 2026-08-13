@@ -11,6 +11,57 @@
     ["Asistencia facial","Reconocer rostros en un grupo pequeño.","No conviene","La invasión y el riesgo biométrico son desproporcionados frente a alternativas simples."]
   ];
   const phase=(title,minutes,teacher,student,expected,intervene,resource,check)=>({title,minutes,teacher,student,expected,intervene,resource,check});
+  const lessonById=id=>window.NEXUS_COURSE.units.flatMap(u=>u.lessons).find(l=>l.id===id);
+  const firstSentence=text=>{
+    const match=String(text||"").match(/^.*?[.!?](?:\s|$)/);
+    return (match?match[0]:String(text||"")).trim();
+  };
+  const compact=(text,max=255)=>{
+    const value=String(text||"").replace(/\s+/g," ").trim();
+    if(value.length<=max)return value;
+    const cut=value.slice(0,max),stop=Math.max(cut.lastIndexOf(". "),cut.lastIndexOf("; "),cut.lastIndexOf(", "));
+    return `${cut.slice(0,stop>max*.55?stop:max).trim()}…`;
+  };
+  const audienceText=text=>String(text||"")
+    .replace(/Antes de proponer IA pregunte:/i,"La pertinencia de la IA se evalúa con estas preguntas:")
+    .replace(/^Prepare un conjunto de preguntas/i,"Una evaluación sólida incluye un conjunto de preguntas")
+    .replace(/^Pruebe inyección/i,"Las pruebas incluyen inyección")
+    .replace(/^Defina qué se guarda/i,"La gobernanza de la memoria define qué se guarda")
+    .replace(/^Priorice un alcance pequeño/i,"Es preferible un alcance pequeño")
+    .replace(/^Diseñe comportamiento ante falta de evidencia/i,"El comportamiento ante falta de evidencia debe quedar definido")
+    .replace(/^Siempre que sea posible se procesa/i,"Cuando es viable, el procesamiento se realiza");
+  const nounLabel=(text,index)=>{
+    const value=String(text||"").replace(/^(Definir|Diseñar|Aplicar|Evaluar|Preparar|Registrar|Comparar|Controlar|Explicar|Separar|Gestionar|Limitar|Probar|Construir|Seleccionar|Validar|Confirmar|Documentar)\s+/i,"");
+    return value?value.charAt(0).toUpperCase()+value.slice(1):`Componente ${index+1}`;
+  };
+  const projectable=s=>{
+    const lessons=s.lessonIds.map(lessonById).filter(Boolean);
+    const theory=lessons.flatMap(l=>l.theory||[]).map(audienceText);
+    const sequence=lessons.flatMap(l=>l.video||[]).slice(0,4);
+    const feedback=lessons.map(l=>l.check?.f).filter(Boolean);
+    const concepts=theory.slice(0,4).map((text,i)=>({
+      label:nounLabel(sequence[i],i),
+      text:compact(text,165)
+    }));
+    const essentials=theory.slice(0,3).map(firstSentence);
+    const criteria=[
+      `El procedimiento distingue entradas, transformación, salida y responsable.`,
+      `La decisión se sostiene con evidencia y no sólo con una respuesta plausible.`,
+      `Los límites, casos inciertos y mecanismos de revisión quedan visibles.`,
+      feedback[0]||`La conclusión puede explicarse y comprobarse con un caso de prueba.`
+    ];
+    return [
+      {kind:"cover",kicker:`SESIÓN ${s.number} · SISTEMAS INTELIGENTES`,title:s.title,lead:firstSentence(theory[0]),meta:[`${s.theoryMinutes} min de comprensión`,`${s.practiceMinutes} min de aplicación`,`${s.independentMinutes} min de continuidad`]},
+      {kind:"question",kicker:"ACTIVACIÓN",title:s.trigger,lead:"Formula una respuesta inicial y un contraejemplo. Después contrasta el criterio que utilizaste con una pareja."},
+      {kind:"explanation",kicker:"EXPLICACIÓN CONCEPTUAL",title:"La idea central",lead:compact(theory[0],260),items:concepts.slice(1,4)},
+      {kind:"concepts",kicker:"CONCEPTOS ESENCIALES",title:"Las piezas no significan lo mismo",items:concepts},
+      {kind:"process",kicker:"RELACIÓN ENTRE COMPONENTES",title:"Así se construye el razonamiento",items:sequence.map((label,i)=>({label:nounLabel(label,i),text:compact(theory[i]||theory[0],145)}))},
+      {kind:"case",kicker:"EJEMPLO RAZONADO",title:"Del concepto a una decisión verificable",lead:compact(s.example,560),takeaway:feedback[0]||essentials.at(-1)},
+      {kind:"challenge",kicker:"APLICACIÓN EN EQUIPO",title:"Ahora utiliza el criterio",lead:compact(s.guided,470),steps:["Propuesta individual","Contraste de supuestos","Resolución documentada","Defensa con evidencia y límites"],deliverable:s.product},
+      {kind:"criteria",kicker:"CRITERIOS DE CALIDAD",title:"Una solución sólida debe mostrar",items:criteria},
+      {kind:"summary",kicker:"SÍNTESIS Y TRANSFERENCIA",title:"Lo esencial de la sesión",items:essentials,question:s.exit[0],after:s.independentDetailed.map(x=>`${x.name} · ${x.min} min`)}
+    ];
+  };
   const make=s=>{
     const concepts=s.focus.split(/;|\.|:/).map(x=>x.trim()).filter(Boolean);
     const expectedCore=[`Distingue los conceptos centrales de ${s.title.toLowerCase()}.`,`Justifica decisiones con evidencia, límites y consecuencias.`,`Reconoce cuándo debe abstenerse o solicitar revisión humana.`];
@@ -72,8 +123,11 @@
       materials:["Diapositivas o modo proyección","Hoja de trabajo descargable",s.lab,s.game,"Formulario de salida","Consigna y rúbrica de Classroom"],
       firstCases:s.number===1?firstCases:null,
       expected:expectedCore,
-      classroomText:`Sesión ${s.number}: ${s.title}\n\nPropósito: ${s.objective}\n\nActividad independiente (${s.independentMinutes} min): ${s.independent.map(x=>`${x[0]} (${x[1]} min): ${x[2]}`).join(" ")}\n\nEvidencia: ${s.product}\n\nAntes de entregar, verifique que su trabajo incluya procedimiento, evidencia, límites y una reflexión sobre responsabilidad.`
+      classroomText:`Sesión ${s.number}: ${s.title}\n\nPropósito: ${s.objective}\n\nActividad independiente (${s.independentMinutes} min): ${s.independent.map(x=>`${x[0]} (${x[1]} min): ${x[2]}`).join(" ")}\n\nEvidencia: ${s.product}\n\nAntes de entregar, verifique que su trabajo incluya procedimiento, evidencia, límites y una reflexión sobre responsabilidad.`,
+      projectable:null
     };
   };
-  window.NEXUS_TEACHER_DETAIL={sessions:T.sessions.map(make),firstCases};
+  const sessions=T.sessions.map(make);
+  sessions.forEach(s=>{s.projectable=projectable(s)});
+  window.NEXUS_TEACHER_DETAIL={sessions,firstCases};
 })();
