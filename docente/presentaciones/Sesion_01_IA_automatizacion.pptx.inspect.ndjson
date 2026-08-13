@@ -1,0 +1,141 @@
+{"kind":"deck","id":"pr/cq12xn","name":"Deck"}
+{"kind":"layout","layoutId":"9c156ed3-c543-4b63-a7d0-6146011ed348","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"575829bd-6704-4c7d-b73e-64d13ce9497b","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/8kmc87","slide":1,"title":"SISTEMAS INTELIGENTES · SESIÓN 1","textShapes":9}
+{"kind":"textbox","id":"sh/itwnm5cj","slide":1,"text":"SISTEMAS INTELIGENTES · SESIÓN 1","textPreview":"SISTEMAS INTELIGENTES · SESIÓN 1","textChars":32,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/5wnmhkba","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/4ve5ofup","slide":1,"text":"IA, automatización y\nproblemas pertinentes","textPreview":"IA, automatización y | problemas pertinentes","textChars":42,"textLines":2,"bbox":[72,145,760,210]}
+{"kind":"textbox","id":"sh/ryp4jut0","slide":1,"text":"Decidir cuándo una regla simple es suficiente","textPreview":"Decidir cuándo una regla simple es suficiente","textChars":45,"textLines":1,"bbox":[78,384,650,58]}
+{"kind":"shape","id":"sh/qxgnqpcf","slide":1,"bbox":[902,120,250,400]}
+{"kind":"textbox","id":"sh/dk7mlkb6","slide":1,"text":"100","textPreview":"100","textChars":3,"textLines":1,"bbox":[940,168,175,100]}
+{"kind":"textbox","id":"sh/sjy5szul","slide":1,"text":"minutos","textPreview":"minutos","textChars":7,"textLines":1,"bbox":[940,264,175,42]}
+{"kind":"textbox","id":"sh/fmp4nutc","slide":1,"text":"60 min teoría\n40 min práctica","textPreview":"60 min teoría | 40 min práctica","textChars":29,"textLines":2,"bbox":[930,340,195,100]}
+{"kind":"textbox","id":"sh/elgnupcr","slide":1,"text":"Pregunta detonante →","textPreview":"Pregunta detonante →","textChars":20,"textLines":1,"bbox":[76,586,280,30]}
+{"kind":"textbox","id":"sh/wrmhojql","slide":1,"text":"¿Todo proceso que toma una decisión puede llamarse inteligente?","textPreview":"¿Todo proceso que toma una decisión puede llamarse inteligente?","textChars":63,"textLines":1,"bbox":[350,566,820,70]}
+{"kind":"notes","id":"nt/8kmc87","slide":1,"text":""}
+{"kind":"slide","id":"sl/tseby7","slide":2,"title":"ACTIVACIÓN · 10 MINUTOS","textShapes":6}
+{"kind":"textbox","id":"sh/ojqtcf2d","slide":2,"text":"ACTIVACIÓN · 10 MINUTOS","textPreview":"ACTIVACIÓN · 10 MINUTOS","textChars":23,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/nihc3als","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/2h8ba5k7","slide":2,"text":"Piensa antes de definir","textPreview":"Piensa antes de definir","textChars":23,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/x8ju9k3u","slide":2,"text":"Responde individualmente; después contrasta con una pareja.","textPreview":"Responde individualmente; después contrasta con una pareja.","textChars":59,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/cnqdgf29","slide":2,"bbox":[82,305,1116,250]}
+{"kind":"textbox","id":"sh/bmhc7ulo","slide":2,"text":"¿Todo proceso que toma una decisión\npuede llamarse inteligente?","textPreview":"¿Todo proceso que toma una decisión | puede llamarse inteligente?","textChars":63,"textLines":2,"bbox":[125,338,1030,115]}
+{"kind":"textbox","id":"sh/al8vepkj","slide":2,"text":"Escribe una razón y un contraejemplo.","textPreview":"Escribe una razón y un contraejemplo.","textChars":37,"textLines":1,"bbox":[264,474,750,40]}
+{"kind":"notes","id":"nt/tseby7","slide":2,"text":""}
+{"kind":"slide","id":"sl/o9g84u","slide":3,"title":"EXPLICACIÓN DIALOGADA · 25 MINUTOS","textShapes":16}
+{"kind":"textbox","id":"sh/etwfa1cf","slide":3,"text":"EXPLICACIÓN DIALOGADA · 25 MINUTOS","textPreview":"EXPLICACIÓN DIALOGADA · 25 MINUTOS","textChars":34,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/1wnylgvq","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/0vexcbu5","slide":3,"text":"Cuatro capas que no significan lo mismo","textPreview":"Cuatro capas que no significan lo mismo","textChars":39,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/ny5gnqtw","slide":3,"text":"Clasifica por lo que hace realmente cada componente.","textPreview":"Clasifica por lo que hace realmente cada componente.","textChars":52,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/2xwfelcb","slide":3,"bbox":[64,300,270,260]}
+{"kind":"textbox","id":"sh/p0nyp0b2","slide":3,"text":"AUTOMATIZACIÓN","textPreview":"AUTOMATIZACIÓN","textChars":14,"textLines":1,"bbox":[84,320,230,34]}
+{"kind":"textbox","id":"sh/ozexgvuh","slide":3,"text":"Ejecuta reglas definidas","textPreview":"Ejecuta reglas definidas","textChars":24,"textLines":1,"bbox":[84,372,230,70]}
+{"kind":"textbox","id":"sh/b2pgrqts","slide":3,"text":"Si fecha − hoy = 3 → enviar correo","textPreview":"Si fecha − hoy = 3 → enviar correo","textChars":34,"textLines":1,"bbox":[84,462,230,64]}
+{"kind":"shape","id":"sh/a1gfilcn","slide":3,"bbox":[358,300,270,260]}
+{"kind":"textbox","id":"sh/8nm9s3q1","slide":3,"text":"MODELO","textPreview":"MODELO","textChars":6,"textLines":1,"bbox":[378,320,230,34]}
+{"kind":"textbox","id":"sh/98vql8r6","slide":3,"text":"Estima o predice","textPreview":"Estima o predice","textChars":16,"textLines":1,"bbox":[378,372,230,70]}
+{"kind":"textbox","id":"sh/mlkrqd8v","slide":3,"text":"Probabilidad de retraso","textPreview":"Probabilidad de retraso","textChars":23,"textLines":1,"bbox":[378,462,230,64]}
+{"kind":"shape","id":"sh/7md8jy9g","slide":3,"bbox":[652,300,270,260]}
+{"kind":"textbox","id":"sh/wbm9wnqx","slide":3,"text":"SISTEMA","textPreview":"SISTEMA","textChars":7,"textLines":1,"bbox":[672,320,230,34]}
+{"kind":"textbox","id":"sh/hcvapsri","slide":3,"text":"Coordina datos, reglas y personas","textPreview":"Coordina datos, reglas y personas","textChars":33,"textLines":1,"bbox":[672,372,230,70]}
+{"kind":"textbox","id":"sh/u94rud8r","slide":3,"text":"Predicción + consentimiento + revisión","textPreview":"Predicción + consentimiento + revisión","textChars":38,"textLines":1,"bbox":[672,462,230,64]}
+{"kind":"shape","id":"sh/vad8ni9c","slide":3,"bbox":[946,300,270,260]}
+{"kind":"textbox","id":"sh/4f690nqt","slide":3,"text":"PRODUCTO","textPreview":"PRODUCTO","textChars":8,"textLines":1,"bbox":[966,320,230,34]}
+{"kind":"textbox","id":"sh/5gfatsre","slide":3,"text":"Entrega valor en un contexto","textPreview":"Entrega valor en un contexto","textChars":28,"textLines":1,"bbox":[966,372,230,70]}
+{"kind":"textbox","id":"sh/dwbqdsji","slide":3,"text":"Portal completo de biblioteca","textPreview":"Portal completo de biblioteca","textChars":29,"textLines":1,"bbox":[966,462,230,64]}
+{"kind":"notes","id":"nt/o9g84u","slide":3,"text":""}
+{"kind":"slide","id":"sl/m9mk9e","slide":4,"title":"EJEMPLO COMENTADO · 15 MINUTOS","textShapes":15}
+{"kind":"textbox","id":"sh/ihgz69gn","slide":4,"text":"EJEMPLO COMENTADO · 15 MINUTOS","textPreview":"EJEMPLO COMENTADO · 15 MINUTOS","textChars":30,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/5k7i1ofe","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/kjyh8jyt","slide":4,"text":"El caso de la biblioteca","textPreview":"El caso de la biblioteca","textChars":24,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/vup0vuxc","slide":4,"text":"La inteligencia no aparece por añadir una etiqueta.","textPreview":"La inteligencia no aparece por añadir una etiqueta.","textChars":51,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/atwz29gr","slide":4,"bbox":[90,320,330,210]}
+{"kind":"textbox","id":"sh/xw7ix4fi","slide":4,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[110,342,52,52]}
+{"kind":"textbox","id":"sh/wvyh4zyx","slide":4,"text":"REGLA","textPreview":"REGLA","textChars":5,"textLines":1,"bbox":[176,342,210,42]}
+{"kind":"textbox","id":"sh/nq50rux0","slide":4,"text":"Correo 3 días antes","textPreview":"Correo 3 días antes","textChars":19,"textLines":1,"bbox":[118,410,274,80]}
+{"kind":"textbox","id":"sh/mpwzypgv","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[427,390,42,50]}
+{"kind":"shape","id":"sh/8nm18v6p","slide":4,"bbox":[475,320,330,210]}
+{"kind":"textbox","id":"sh/tof210na","slide":4,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[495,342,52,52]}
+{"kind":"textbox","id":"sh/6l4j6loj","slide":4,"text":"MODELO","textPreview":"MODELO","textChars":6,"textLines":1,"bbox":[561,342,210,42]}
+{"kind":"textbox","id":"sh/7mdkzq54","slide":4,"text":"Predice riesgo","textPreview":"Predice riesgo","textChars":14,"textLines":1,"bbox":[503,410,274,80]}
+{"kind":"textbox","id":"sh/kjm14b6d","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[812,390,42,50]}
+{"kind":"shape","id":"sh/lkv2xgny","slide":4,"bbox":[860,320,330,210]}
+{"kind":"textbox","id":"sh/yh4j21on","slide":4,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[880,342,52,52]}
+{"kind":"textbox","id":"sh/jidkv65s","slide":4,"text":"SISTEMA","textPreview":"SISTEMA","textChars":7,"textLines":1,"bbox":[946,342,210,42]}
+{"kind":"textbox","id":"sh/4fqlgf6x","slide":4,"text":"Explica, pide consentimiento y permite revisión","textPreview":"Explica, pide consentimiento y permite revisión","textChars":47,"textLines":1,"bbox":[888,410,274,80]}
+{"kind":"notes","id":"nt/m9mk9e","slide":4,"text":""}
+{"kind":"slide","id":"sl/g5s0h7","slide":5,"title":"EJERCICIO GUIADO · 30 MINUTOS","textShapes":11}
+{"kind":"textbox","id":"sh/ovi9ov6p","slide":5,"text":"EJERCICIO GUIADO · 30 MINUTOS","textPreview":"EJERCICIO GUIADO · 30 MINUTOS","textChars":29,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/nu98vq54","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/2t0rmloj","slide":5,"text":"Clasificar no basta: hay que defender","textPreview":"Clasificar no basta: hay que defender","textChars":37,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/1srqtgny","slide":5,"text":"Ocho soluciones universitarias · tres decisiones posibles","textPreview":"Ocho soluciones universitarias · tres decisiones posibles","textChars":57,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/0ri9kb6t","slide":5,"bbox":[66,303,370,235]}
+{"kind":"textbox","id":"sh/fq98r658","slide":5,"text":"REQUIERE IA","textPreview":"REQUIERE IA","textChars":11,"textLines":1,"bbox":[88,326,326,42]}
+{"kind":"textbox","id":"sh/epg7i1on","slide":5,"text":"La variación exige aprender, inferir o percibir","textPreview":"La variación exige aprender, inferir o percibir","textChars":47,"textLines":1,"bbox":[96,390,310,105]}
+{"kind":"shape","id":"sh/do7qpwn2","slide":5,"bbox":[464,303,370,235]}
+{"kind":"textbox","id":"sh/snypgb6h","slide":5,"text":"BASTA AUTOMATIZAR","textPreview":"BASTA AUTOMATIZAR","textChars":17,"textLines":1,"bbox":[486,326,326,42]}
+{"kind":"textbox","id":"sh/qhkfi50f","slide":5,"text":"Una regla estable resuelve el caso","textPreview":"Una regla estable resuelve el caso","textChars":34,"textLines":1,"bbox":[494,390,310,105]}
+{"kind":"shape","id":"sh/ritwbah0","slide":5,"bbox":[862,303,370,235]}
+{"kind":"textbox","id":"sh/sjmxkfi5","slide":5,"text":"NO CONVIENE CONSTRUIR","textPreview":"NO CONVIENE CONSTRUIR","textChars":21,"textLines":1,"bbox":[884,326,326,42]}
+{"kind":"textbox","id":"sh/d4vedkzq","slide":5,"text":"Riesgo, falta de evidencia o propósito injustificado","textPreview":"Riesgo, falta de evidencia o propósito injustificado","textChars":52,"textLines":1,"bbox":[892,390,310,105]}
+{"kind":"textbox","id":"sh/idkfe503","slide":5,"text":"Criterio común: evidencia · límites · responsabilidad","textPreview":"Criterio común: evidencia · límites · responsabilidad","textChars":53,"textLines":1,"bbox":[290,574,700,40]}
+{"kind":"notes","id":"nt/g5s0h7","slide":5,"text":""}
+{"kind":"slide","id":"sl/eoas54","slide":6,"title":"PROCEDIMIENTO DE TRABAJO","textShapes":15}
+{"kind":"textbox","id":"sh/50fy5cjy","slide":6,"text":"PROCEDIMIENTO DE TRABAJO","textPreview":"PROCEDIMIENTO DE TRABAJO","textChars":24,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/ixofaxkn","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/jyxg321s","slide":6,"text":"De la intuición a una decisión defendible","textPreview":"De la intuición a una decisión defendible","textChars":41,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/wvmx872h","slide":6,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[80,245,70,54]}
+{"kind":"shape","id":"sh/xwfy1cj2","slide":6,"bbox":[170,241,960,66]}
+{"kind":"textbox","id":"sh/a94f6xkb","slide":6,"text":"Propuesta individual","textPreview":"Propuesta individual","textChars":20,"textLines":1,"bbox":[198,249,430,44]}
+{"kind":"textbox","id":"sh/vadgz21w","slide":6,"text":"2 min","textPreview":"2 min","textChars":5,"textLines":1,"bbox":[650,249,440,44]}
+{"kind":"textbox","id":"sh/grqhkr2l","slide":6,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[80,337,70,54]}
+{"kind":"shape","id":"sh/1szydwj6","slide":6,"bbox":[170,333,960,66]}
+{"kind":"textbox","id":"sh/xg7axkf2","slide":6,"text":"Contraste en pareja","textPreview":"Contraste en pareja","textChars":19,"textLines":1,"bbox":[198,341,430,44]}
+{"kind":"textbox","id":"sh/wfytofyh","slide":6,"text":"localiza una diferencia","textPreview":"localiza una diferencia","textChars":23,"textLines":1,"bbox":[650,341,440,44]}
+{"kind":"textbox","id":"sh/vepsvaxw","slide":6,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[80,429,70,54]}
+{"kind":"shape","id":"sh/adgrm5gb","slide":6,"bbox":[170,425,960,66]}
+{"kind":"textbox","id":"sh/9c7at0fq","slide":6,"text":"Resolución por equipo","textPreview":"Resolución por equipo","textChars":21,"textLines":1,"bbox":[198,433,430,44]}
+{"kind":"textbox","id":"sh/8be9kfy5","slide":6,"text":"usa el instrumento","textPreview":"usa el instrumento","textChars":18,"textLines":1,"bbox":[650,433,440,44]}
+{"kind":"textbox","id":"sh/na5sraxk","slide":6,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[80,521,70,54]}
+{"kind":"shape","id":"sh/mpwri5gz","slide":6,"bbox":[170,517,960,66]}
+{"kind":"textbox","id":"sh/t8ra54fu","slide":6,"text":"Puesta en común","textPreview":"Puesta en común","textChars":15,"textLines":1,"bbox":[198,525,430,44]}
+{"kind":"textbox","id":"sh/s7itwzyp","slide":6,"text":"compara evidencia y límites","textPreview":"compara evidencia y límites","textChars":27,"textLines":1,"bbox":[650,525,440,44]}
+{"kind":"notes","id":"nt/eoas54","slide":6,"text":""}
+{"kind":"slide","id":"sl/p1xbyq","slide":7,"title":"REVISIÓN Y CIERRE · 20 MINUTOS","textShapes":10}
+{"kind":"textbox","id":"sh/fy9grqlw","slide":7,"text":"REVISIÓN Y CIERRE · 20 MINUTOS","textPreview":"REVISIÓN Y CIERRE · 20 MINUTOS","textChars":30,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/gzih0v2h","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/10rit032","slide":7,"text":"Una respuesta correcta no es evidencia suficiente","textPreview":"Una respuesta correcta no es evidencia suficiente","textChars":49,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/6tgzul4f","slide":7,"text":"Antes de aceptar una solución, pregunte:","textPreview":"Antes de aceptar una solución, pregunte:","textChars":40,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/7upgnqlk","slide":7,"bbox":[100,284,1080,78]}
+{"kind":"textbox","id":"sh/svyhwvm5","slide":7,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[120,297,44,48]}
+{"kind":"textbox","id":"sh/tw7yp03q","slide":7,"text":"¿Qué datos y procedimiento sostienen la salida?","textPreview":"¿Qué datos y procedimiento sostienen la salida?","textChars":47,"textLines":1,"bbox":[186,297,930,48]}
+{"kind":"shape","id":"sh/i5gzq143","slide":7,"bbox":[100,388,1080,78]}
+{"kind":"textbox","id":"sh/j6pgj6lo","slide":7,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[120,401,44,48]}
+{"kind":"textbox","id":"sh/jqtc7u9g","slide":7,"text":"¿Qué ocurre en casos límite o con evidencia insuficiente?","textPreview":"¿Qué ocurre en casos límite o con evidencia insuficiente?","textChars":57,"textLines":1,"bbox":[186,401,930,48]}
+{"kind":"shape","id":"sh/ipkvyp8v","slide":7,"bbox":[100,492,1080,78]}
+{"kind":"textbox","id":"sh/5svu94r6","slide":7,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[120,505,44,48]}
+{"kind":"textbox","id":"sh/4r2d0zql","slide":7,"text":"¿Quién responde por la consecuencia y puede detenerla?","textPreview":"¿Quién responde por la consecuencia y puede detenerla?","textChars":54,"textLines":1,"bbox":[186,505,930,48]}
+{"kind":"notes","id":"nt/p1xbyq","slide":7,"text":""}
+{"kind":"slide","id":"sl/yjh235","slide":8,"title":"DESPUÉS DE CLASE · 90 MINUTOS","textShapes":17}
+{"kind":"textbox","id":"sh/lwf2pon6","slide":8,"text":"DESPUÉS DE CLASE · 90 MINUTOS","textPreview":"DESPUÉS DE CLASE · 90 MINUTOS","textChars":29,"textLines":1,"bbox":[64,34,700,28]}
+{"kind":"textbox","id":"sh/yt4je9ov","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1150,30,66,34]}
+{"kind":"textbox","id":"sh/juxkne5g","slide":8,"text":"Continuación independiente","textPreview":"Continuación independiente","textChars":26,"textLines":1,"bbox":[64,82,1120,115]}
+{"kind":"textbox","id":"sh/wrm1cj6p","slide":8,"text":"Actividades distintas a las realizadas en el aula.","textPreview":"Actividades distintas a las realizadas en el aula.","textChars":50,"textLines":1,"bbox":[68,200,1080,70]}
+{"kind":"shape","id":"sh/xsv2l4na","slide":8,"bbox":[65,300,270,255]}
+{"kind":"textbox","id":"sh/a54ja9oj","slide":8,"text":"20 min","textPreview":"20 min","textChars":6,"textLines":1,"bbox":[85,324,230,40]}
+{"kind":"textbox","id":"sh/b6dkjep4","slide":8,"text":"REPASO","textPreview":"REPASO","textChars":6,"textLines":1,"bbox":[85,380,230,35]}
+{"kind":"textbox","id":"sh/o3m18z6t","slide":8,"text":"Síntesis de 5 ideas + ejemplo propio","textPreview":"Síntesis de 5 ideas + ejemplo propio","textChars":36,"textLines":1,"bbox":[89,438,222,76]}
+{"kind":"shape","id":"sh/94v2h47y","slide":8,"bbox":[359,300,270,255]}
+{"kind":"textbox","id":"sh/1o3adwve","slide":8,"text":"27 min","textPreview":"27 min","textChars":6,"textLines":1,"bbox":[379,324,230,40]}
+{"kind":"textbox","id":"sh/0nut4ret","slide":8,"text":"ENTRENAMIENTO","textPreview":"ENTRENAMIENTO","textChars":13,"textLines":1,"bbox":[379,380,230,35]}
+{"kind":"textbox","id":"sh/z2lsb6do","slide":8,"text":"Nueva variante de clasificación","textPreview":"Nueva variante de clasificación","textChars":31,"textLines":1,"bbox":[383,438,222,76]}
+{"kind":"shape","id":"sh/e1cb21w3","slide":8,"bbox":[653,300,270,255]}
+{"kind":"textbox","id":"sh/d03a9wvi","slide":8,"text":"16 min","textPreview":"16 min","textChars":6,"textLines":1,"bbox":[673,324,230,40]}
+{"kind":"textbox","id":"sh/czut0rex","slide":8,"text":"LABORATORIO","textPreview":"LABORATORIO","textChars":11,"textLines":1,"bbox":[673,380,230,35]}
+{"kind":"textbox","id":"sh/ryls7mdc","slide":8,"text":"Radar IA o automatización","textPreview":"Radar IA o automatización","textChars":25,"textLines":1,"bbox":[677,438,222,76]}
+{"kind":"shape","id":"sh/qxsbyhwr","slide":8,"bbox":[947,300,270,255]}
+{"kind":"textbox","id":"sh/pwja5cf6","slide":8,"text":"27 min","textPreview":"27 min","textChars":6,"textLines":1,"bbox":[967,324,230,40]}
+{"kind":"textbox","id":"sh/4va9w7el","slide":8,"text":"EVIDENCIA","textPreview":"EVIDENCIA","textChars":9,"textLines":1,"bbox":[967,380,230,35]}
+{"kind":"textbox","id":"sh/gfetcrmh","slide":8,"text":"Problema real: versión sin IA y con IA","textPreview":"Problema real: versión sin IA y con IA","textChars":38,"textLines":1,"bbox":[971,438,222,76]}
+{"kind":"textbox","id":"sh/hgnalwn2","slide":8,"text":"Salida de clase: decisión principal · caso de fallo · duda o prueba pendiente","textPreview":"Salida de clase: decisión principal · caso de fallo · duda o prueba pendiente","textChars":77,"textLines":1,"bbox":[130,596,1020,42]}
+{"kind":"notes","id":"nt/yjh235","slide":8,"text":""}

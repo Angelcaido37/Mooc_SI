@@ -1,0 +1,8 @@
+window.NEXUS_TECH_LABS = [
+  {unit:1,minutes:100,title:"Reglas, agentes y decisiones",summary:"Compare una automatización visual con un agente que explica qué regla activó y cuándo debe abstenerse.",noCode:"Blockly / diagrama de flujo",python:"Python: reglas + pruebas",file:"01_agente_reglas.ipynb"},
+  {unit:2,minutes:110,title:"Búsqueda de rutas: BFS y A*",summary:"Construya un grafo por bloques, recorra estados y compare costo, nodos explorados y calidad de la ruta.",noCode:"Orange: flujo de datos",python:"Python: BFS y A*",file:"02_busqueda_bfs_astar.ipynb"},
+  {unit:3,minutes:100,title:"Decisiones bajo incertidumbre",summary:"Experimente con umbrales y costos de error antes de programar una política de decisión auditable.",noCode:"Hoja de cálculo / controles",python:"Python: probabilidad y umbral",file:"03_decision_umbral.ipynb"},
+  {unit:4,minutes:120,title:"Percepción con imágenes",summary:"Entrene un clasificador sencillo con Teachable Machine y documente errores, sesgos y condiciones de captura.",noCode:"Teachable Machine",python:"Python: matriz de confusión",file:"04_percepcion_imagenes.ipynb"},
+  {unit:5,minutes:110,title:"RAG verificable",summary:"Arme visualmente el flujo recuperar-generar y programe una versión mínima que cite el fragmento utilizado.",noCode:"Constructor visual RAG",python:"Python: recuperación por similitud",file:"05_rag_minimo.ipynb"},
+  {unit:6,minutes:120,title:"Servicio inteligente con FastAPI",summary:"Convierta una política de decisión en una API con validación, explicación, abstención y pruebas automáticas en Colab.",noCode:"Formulario de prueba",python:"FastAPI + TestClient",file:"06_fastapi_servicio.ipynb"}
+];

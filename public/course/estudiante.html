@@ -8,10 +8,15 @@
   <title>Portal estudiante · Misión NEXUS</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="v4.css">
+  <link rel="stylesheet" href="visual-lessons.css">
 </head>
-<body>
+<body class="student-locked">
   <a class="skip-link" href="#main">Saltar al contenido</a>
-  <div id="app">
+  <section id="studentGate" class="secure-gate" role="status" aria-live="polite">
+    <div class="auth-card"><span class="brand-mark">N</span><h1>Verificando acceso</h1><p>El contenido se mostrará después de validar tu cuenta de Google.</p></div>
+  </section>
+  <div id="app" hidden>
     <header class="topbar">
       <button id="menuBtn" class="icon-btn mobile-only" aria-label="Abrir menú">☰</button>
       <button class="brand" data-nav="home" aria-label="Ir al inicio">
@@ -33,6 +38,7 @@
         <button class="nav-item" data-nav="project"><span>◇</span>Proyecto integrador</button>
         <button class="nav-item" data-nav="games"><span>✦</span>Juegos y retos</button>
         <button class="nav-item" data-nav="lowcode"><span>⌘</span>Laboratorio low/no-code</button>
+        <button class="nav-item" data-nav="technical"><span>{ }</span>Python y FastAPI</button>
         <button class="nav-item" data-nav="evidence"><span>✓</span>Evidencias y rúbricas</button>
         <button class="nav-item" id="cloudEvidence"><span>☁</span>Guardar y entregar</button>
         <button class="nav-item" data-nav="glossary"><span>A</span>Glosario</button>
@@ -70,6 +76,8 @@
   <script src="course-data.js"></script>
   <script src="teaching-data.js"></script>
   <script src="game-data.js"></script>
+  <script src="technical-labs-data.js"></script>
+  <script src="visual-lessons-data.js"></script>
   <script src="app.js"></script><script src="student-cloud.js"></script>
 </body>
 </html>
