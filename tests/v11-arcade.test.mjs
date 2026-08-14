@@ -60,5 +60,5 @@ test("las nuevas rutas y archivos funcionan sin conexión",()=>{
   assert.match(app,/type==="bonus"/);
   assert.match(app,/type==="shop"/);
   for(const file of ["arcade.css","arcade-data.js","arcade.js"])assert.match(sw,new RegExp(file.replace(".","\\.")));
-  assert.match(sw,/nexus-v(?:11-arcade-avatares-tienda|12-piloto-semestral-analitica|13-modo-conduccion-docente)/);
+  assert.match(sw,/nexus-v(?:11-arcade-avatares-tienda|12-piloto-semestral-analitica|13-modo-conduccion-docente|14-separacion-rutas-y-tabla|15-medicion-semestral-integrada)/);
 });

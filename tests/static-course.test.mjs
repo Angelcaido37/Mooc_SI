@@ -74,7 +74,7 @@ test("cada leccion incluye enseñanza practica evaluacion y microleccion",()=>{
 });
 
 test("materiales descargables y archivos web presentes",()=>{
-  for(const file of ["index.html","estudiante.html","docente.html","styles.css","portal.css","app.js","teacher-app.js","course-data.js","teaching-data.js","teacher-detail-data.js","game-data.js","firebase-config.js","platform.js","manifest.webmanifest","sw.js"])
+  for(const file of ["index.html","estudiante.html","docente.html","styles.css","portal.css","app.js","teacher-app.js","course-data.js","teaching-data.js","teacher-detail-data.js","game-data.js","firebase-config.js","platform.js","measurement-data.js","measurement-student.js","measurement-teacher.js","measurement.css","manifest.webmanifest","sw.js"])
     assert.ok(fs.existsSync(path.join(courseRoot,file)),file);
   for(const file of ["unidad-1-fundamentos.pdf","unidad-2-conocimiento.pdf","unidad-3-decision.pdf","unidad-4-percepcion.pdf","unidad-5-generativa-y-rag.pdf","unidad-6-integracion.pdf"])
     assert.ok(fs.statSync(path.join(courseRoot,"materiales",file)).size>10000,file);

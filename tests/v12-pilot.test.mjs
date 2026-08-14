@@ -71,6 +71,6 @@ test("el portal docente mide estudiantes y su propia utilidad",()=>{
 
 test("la versión piloto funciona sin conexión",()=>{
   const sw=read("sw.js");
-  assert.match(sw,/nexus-v(?:12-piloto-semestral-analitica|13-modo-conduccion-docente)/);
+  assert.match(sw,/nexus-v(?:12-piloto-semestral-analitica|13-modo-conduccion-docente|14-separacion-rutas-y-tabla|15-medicion-semestral-integrada)/);
   for(const file of ["pilot.css","pilot-data.js","pilot.js"])assert.match(sw,new RegExp(file.replace(".","\\.")));
 });

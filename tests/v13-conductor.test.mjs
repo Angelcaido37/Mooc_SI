@@ -56,7 +56,7 @@ test("la analítica y los instrumentos permiten evaluar el modo durante el semes
   assert.match(teacher,/conductorPlanBUses/);
   assert.match(teacher,/exportConductorLogs/);
   assert.match(teacher,/evaluacion_modo_conduccion_v13\.xlsx/);
-  assert.match(sw,/nexus-v13-modo-conduccion-docente/);
+  assert.match(sw,/nexus-v(?:13-modo-conduccion-docente|14-separacion-rutas-y-tabla|15-medicion-semestral-integrada)/);
   assert.match(sw,/teacher-conductor\.js/);
   assert.match(sw,/evaluacion_modo_conduccion_v13\.xlsx/);
   assert.ok(fs.statSync("instrumentos/evaluacion_modo_conduccion_v13.xlsx").size>8000);
