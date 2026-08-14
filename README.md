@@ -1,6 +1,6 @@
-# Misión NEXUS v15.1 · Medición semestral integrada
+# Misión NEXUS · Plataforma académica universitaria
 
-Esta versión conserva todo lo desarrollado hasta NEXUS v14 e integra dentro de la plataforma los instrumentos del piloto. Estudiantes y docentes reciben únicamente los cuestionarios correspondientes a la fase actual; el portal docente reúne cobertura, datos automáticos, comparación pre/post, experiencia estudiantil y valoración de la plataforma.
+NEXUS integra planeación docente, conducción de sesiones, ruta estudiantil, gamificación, seguimiento, evaluación semestral y publicación de actividades en Google Classroom. Estudiantes y docentes reciben únicamente los instrumentos correspondientes a la fase académica actual; el portal docente reúne cobertura, datos automáticos, comparación pre/post, experiencia estudiantil y valoración de la plataforma.
 
 Plataforma universitaria de 96 horas con portales protegidos para docente y estudiante.
 
@@ -10,7 +10,7 @@ Plataforma universitaria de 96 horas con portales protegidos para docente y estu
 - Acceso directo desde cada sesión estudiantil a la lámina visual y a la explicación académica completa.
 - Tabla de posiciones semanal claramente rotulada en el menú y en el Centro de mando.
 - Estado visible cuando todavía no hay participantes o cuando falta publicar `firestore.rules`.
-- Identificador `v15.1` en ambos portales para comprobar que la corrección de permisos está activa.
+- Identidad institucional uniforme en ambos portales y renovación automática de caché.
 - La medición reutiliza rutas protegidas ya existentes (`coursework`, `progress` y `teacherUsage`) para evitar el error «Missing or insufficient permissions» cuando el portal se actualiza antes que las reglas.
 - Renovación automática de la caché para evitar que el navegador conserve módulos anteriores.
 
@@ -24,7 +24,7 @@ Plataforma universitaria de 96 horas con portales protegidos para docente y estu
 - Las seis unidades comparten el formato visual–textual–interactivo aprobado: una ilustración original por lección, texto accesible, componentes explorables, ejemplo, error típico, límite, reto con retroalimentación y laboratorio.
 - Seis cuadernos Colab documentados: reglas, BFS/A*, umbrales, percepción, RAG y FastAPI.
 - Acceso único con Google. El rol docente sólo se obtiene desde `roles/{UID}` en Firestore.
-- Progreso sincronizado en Firestore; no existe modo demostración.
+- Progreso sincronizado en Firestore para las cuentas autenticadas.
 - Seguimiento docente en tiempo real con estudiante, progreso, ubicación actual, laboratorios, evidencias y última actividad.
 - Insignias automáticas por completar misiones, con nombre y significado separados visualmente.
 - NexoCoins obtenidas sólo mediante retos opcionales; no alteran XP ni calificación.
@@ -45,16 +45,20 @@ Plataforma universitaria de 96 horas con portales protegidos para docente y estu
 - Módulo estudiantil «Mi participación y encuestas», con avisos de instrumentos disponibles y estado de cada aplicación.
 - Tablero integrado con cobertura, conocimiento pre/post emparejado, autoeficacia, motivación, dimensiones de experiencia y resultados docentes.
 - Integración de datos automáticos de visitas, tiempo aproximado, avance, controles, sesiones conducidas, reflexiones y uso del plan B.
-- Exportación CSV seudonimizada de la medición integrada.
-- Instrumentos CSV y XLSX anteriores conservados como respaldo externo.
-- Instrumento XLSX para evaluar usabilidad docente en semanas 1, 8 y 16, con resumen automático y criterios de interpretación.
+- Exportación CSV seudonimizada de los resultados de la medición integrada.
+- Los formularios de aplicación están incorporados en NEXUS y se habilitan automáticamente por fase; la interfaz ya no muestra plantillas CSV/XLSX heredadas.
+- Evaluación integrada de usabilidad y conducción docente en las fases programadas, con resumen automático y criterios de interpretación.
+- Conexión docente segura con Google Classroom mediante OAuth y funciones de servidor.
+- Publicación de tareas por sesión, con instrucciones, fecha límite, hora y puntuación máxima.
+- Acceso estudiantil directo a la tarea para adjuntar y entregar archivos dentro de Classroom, sin capturar identificadores técnicos.
+- Historial docente de actividades publicadas y acceso directo al trabajo correspondiente.
 
 ## Puesta en marcha
 
-Publique la carpeta completa `public/course`, no archivos aislados, y siga `CONFIGURACION_SEGURIDAD.md`. También publique las reglas actualizadas de `firestore.rules`, necesarias para el calendario, los instrumentos, la clasificación voluntaria, las reflexiones y las bitácoras del Modo Conducción. Después del primer acceso docente, abra «Medición y resultados» y configure la fecha de inicio del semestre.
+Publique la carpeta completa `public/course`, no archivos aislados, y siga `CONFIGURACION_SEGURIDAD.md`. También publique las reglas actualizadas de `firestore.rules`, necesarias para el calendario, los instrumentos, la clasificación voluntaria, Classroom, las reflexiones y las bitácoras del Modo Conducción. Después del primer acceso docente, abra «Medición y resultados» y configure la fecha de inicio del semestre.
 
-Storage y automatización de Classroom quedan desactivados porque requieren servicios o autorización administrativa no disponibles actualmente. Los cuadernos y plantillas se descargan desde la aplicación y pueden entregarse manualmente en Classroom.
+Para activar Classroom complete una sola vez la configuración indicada en `CONFIGURACION_FIREBASE_CLASSROOM.md`: habilitar la API, crear el cliente OAuth, registrar la redirección, cargar tres secretos y desplegar Functions, reglas y Hosting. Storage permanece desactivado porque los archivos se adjuntan y entregan directamente en Classroom.
 
 ## Validación
 
-Ejecute `node --test tests/*.test.mjs`. Las pruebas verifican acceso, separación de rutas, seguimiento, tabla de posiciones, actualización de caché, gamificación responsable, instrumentos por fase, reglas de datos, tablero del piloto, Modo Conducción, cuadernos técnicos, 30 lecciones híbridas y 234 diapositivas explicativas.
+Ejecute `node --test tests/*.test.mjs`. Las pruebas verifican acceso, separación de rutas, seguimiento, tabla de posiciones, actualización de caché, gamificación responsable, instrumentos por fase, reglas de datos, tablero académico, Modo Conducción, integración de Classroom, cuadernos técnicos, 30 lecciones híbridas y 234 diapositivas explicativas.

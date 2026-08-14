@@ -43,7 +43,16 @@ service cloud.firestore { match /databases/{database}/documents {
     allow create,update: if owner(uid) && teacher();
     allow delete: if false;
   }
-  match /coursework/{id} { allow read: if signedIn(); allow write: if teacher(); }
+  match /coursework/nexusPilotConfig {
+    allow read: if signedIn();
+    allow create,update: if teacher();
+    allow delete: if false;
+  }
+  match /coursework/{id} { allow read: if signedIn(); allow write: if false; }
+  match /classroomAssignments/{id} {
+    allow read: if teacher() || (signedIn() && resource.data.state == 'PUBLISHED');
+    allow write: if false;
+  }
   match /classroomTokens/{uid} { allow read,write: if false; }
   match /oauthStates/{id} { allow read,write: if false; }
 } }

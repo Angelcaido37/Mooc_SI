@@ -1,8 +1,8 @@
-# Seguimiento docente en NEXUS v10
+# Seguimiento docente en NEXUS
 
 ## Cuándo aparece un estudiante
 
-La cuenta aparece desde que ingresa al portal estudiantil con Google, aunque no haya completado ninguna lección. Los accesos realizados con versiones anteriores también pueden aparecer con el estado `Acceso previo`; la ubicación exacta se completa cuando la cuenta vuelve a ingresar después de publicar v10.
+La cuenta aparece desde que ingresa al portal estudiantil con Google, aunque no haya completado ninguna lección. Los accesos realizados antes de habilitar el seguimiento de ubicación pueden aparecer con el estado `Acceso previo`; la ubicación exacta se completa cuando la cuenta vuelve a ingresar.
 
 ## Qué se actualiza automáticamente
 

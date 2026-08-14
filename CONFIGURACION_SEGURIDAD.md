@@ -1,14 +1,16 @@
-# Activación segura de Misión NEXUS v4
+# Activación segura de Misión NEXUS
 
 ## 1. Authentication
 
-En Firebase Console abra **Authentication → Sign-in method → Google** y habilite el proveedor. En **Settings → Authorized domains** agregue `angelcaido37.github.io`.
+En Firebase Console abra **Authentication → Sign-in method → Google** y habilite el proveedor. En **Settings → Authorized domains** agregue todos los dominios desde los que se abrirá la plataforma.
 
 ## 2. Firestore
 
-Cree la base de datos y publique el contenido de `firestore.rules`. Estas reglas impiden que un usuario se otorgue a sí mismo el rol docente.
+Cree la base de datos y publique el contenido de `firestore.rules`. Las reglas impiden que una cuenta se otorgue a sí misma el rol docente, aíslan el progreso por estudiante y reservan las consultas agregadas para docentes autorizados.
 
-En NEXUS v15.1 la medición reutiliza rutas protegidas que ya forman parte de la plataforma: el calendario se guarda en `coursework/nexusPilotConfig`, las respuestas estudiantiles dentro de `progress/{uid}.measurementResponses` y las respuestas del docente dentro de `teacherUsage/{uid}.measurementResponses`. El estudiante sólo puede leer y escribir su propio progreso y el tablero agregado continúa reservado al rol docente. Las colecciones introducidas en v15 permanecen en las reglas únicamente como compatibilidad histórica.
+La medición usa rutas protegidas integradas a la plataforma: el calendario se guarda en `coursework/nexusPilotConfig` por compatibilidad técnica, las respuestas estudiantiles en `progress/{uid}.measurementResponses` y las respuestas docentes en `teacherUsage/{uid}.measurementResponses`. El nombre interno del documento de calendario no se presenta en la interfaz.
+
+Los vínculos de tareas creadas en Google Classroom se registran en `classroomAssignments`. Las cuentas docentes pueden consultar sus publicaciones y el alumnado sólo puede leer registros con estado `PUBLISHED`; las escrituras se realizan exclusivamente desde Firebase Functions.
 
 ## 3. Primer acceso y autorización docente
 
@@ -16,17 +18,25 @@ En NEXUS v15.1 la medición reutiliza rutas protegidas que ya forman parte de la
 2. En **Authentication → Users**, copie su UID.
 3. En **Firestore → roles**, cree un documento cuyo identificador sea exactamente ese UID.
 4. Agregue el campo `role`, tipo **string**, valor `teacher`.
-5. Cierre sesión e ingrese otra vez. Sólo esa cuenta será enviada al portal docente.
+5. Cierre sesión e ingrese otra vez.
 
-Una cuenta sin documento de rol se considera estudiante. Aunque escriba `docente.html` en la barra de direcciones, la aplicación mantiene el contenido oculto y consulta el rol antes de renderizarlo.
+Una cuenta sin documento de rol se considera estudiante. Aunque escriba `docente.html` en la barra de direcciones, la aplicación consulta el rol antes de renderizar contenido privado.
 
-## 4. Storage y Classroom
+## 4. Classroom y archivos de evidencias
 
-Esta entrega funciona sin Storage y no solicita actualizar el plan. Las evidencias se descargan y se entregan por el enlace normal de Classroom. La creación de tareas, entrega automática y sincronización de calificaciones requiere autorización de un administrador de Google Workspace; por eso permanece desactivada y no se simula.
+La creación de tareas usa OAuth y Firebase Functions. Siga `CONFIGURACION_FIREBASE_CLASSROOM.md` para habilitar la API, registrar el cliente OAuth y cargar los secretos. Los tokens no están disponibles para los clientes web mediante las reglas de Firestore.
 
-## 5. Publicación en GitHub Pages
+Storage permanece desactivado: el estudiante adjunta y entrega sus archivos directamente en Google Classroom. De este modo NEXUS no duplica documentos ni solicita un servicio adicional para evidencias.
 
-Reemplace la carpeta `public/course` del repositorio, confirme los cambios y espere la publicación. Después haga una recarga forzada o borre los datos del sitio para retirar el caché de versiones anteriores.
+## 5. Publicación
+
+Desde PowerShell, dentro de la carpeta del proyecto, ejecute:
+
+```powershell
+npx firebase-tools deploy --only functions,firestore:rules,hosting --project mooc-505320
+```
+
+Después haga una recarga forzada para sustituir la caché anterior.
 
 Pruebas mínimas:
 
@@ -34,4 +44,5 @@ Pruebas mínimas:
 - Entrar con una cuenta sin rol: debe abrir el portal estudiante.
 - Escribir manualmente `docente.html` con esa cuenta: debe mostrar acceso denegado.
 - Entrar con el UID autorizado: debe abrir el portal docente.
-- Cerrar sesión: debe volver a la portada y permitir iniciar con otra cuenta.
+- Publicar una actividad de prueba en un curso controlado y verificarla con una cuenta estudiantil.
+- Desconectar Classroom y confirmar que las tareas existentes permanecen en Google.

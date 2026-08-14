@@ -1,54 +1,85 @@
-# Configuración de Misión NEXUS v3
+# Activación de Google Classroom en Misión NEXUS
 
-La aplicación abre inmediatamente en **modo demostración**. Para registrar usuarios, guardar expedientes y conectar Classroom debe desplegarse también en Firebase.
+NEXUS permite que una cuenta con rol docente conecte Google Classroom, seleccione un curso activo y publique la actividad correspondiente a una sesión. El alumnado abre la tarea desde su portal NEXUS y adjunta o entrega sus archivos directamente en Classroom.
 
-## 1. Crear el proyecto
+La conexión utiliza OAuth en Firebase Functions. Los tokens de actualización se guardan en Firestore con acceso exclusivo del servidor: no se escriben en el navegador ni en el repositorio.
 
-1. Cree un proyecto en Firebase/Google Cloud.
-2. Active Authentication > Proveedores > Google.
-3. Cree Firestore y Storage.
-4. Registre una aplicación web y copie su configuración en `public/course/firebase-config.js`.
-5. Cambie `demoMode` a `false`.
+## 1. Habilitar la API
 
-## 2. Autorizar docentes
+1. Abra Google Cloud Console con el proyecto `mooc-505320`.
+2. Entre en **APIs y servicios → Biblioteca**.
+3. Busque y habilite **Google Classroom API**.
 
-En Firestore cree manualmente el documento `roles/UID_DEL_DOCENTE` con:
+## 2. Configurar el consentimiento OAuth
 
-```json
-{"role":"teacher"}
+En **Google Auth Platform** complete Branding, Audience y Data Access.
+
+- Use el nombre visible **Misión NEXUS**.
+- Elija **Internal** si sólo participarán cuentas de la misma organización Google Workspace y la política institucional lo permite.
+- Elija **External** si participarán cuentas externas. Durante la configuración agregue las cuentas autorizadas; antes de un uso amplio puede requerirse la verificación de Google.
+- Registre estos alcances exactos:
+  - `https://www.googleapis.com/auth/classroom.courses.readonly`
+  - `https://www.googleapis.com/auth/classroom.coursework.students`
+
+La administración de Google Workspace puede exigir que la aplicación y sus alcances se marquen como confiables.
+
+## 3. Crear el cliente OAuth
+
+1. En **Clients**, cree un cliente de tipo **Web application**.
+2. Registre como URI de redirección autorizada:
+
+```text
+https://mooc-505320.web.app/api/classroom/callback
 ```
 
-No cree un selector público de rol docente. El UID aparece en Authentication después del primer acceso.
+Si se publicará con otro dominio de Firebase Hosting, agregue también su URI equivalente terminada en `/api/classroom/callback`.
 
-## 3. Desplegar reglas y aplicación
+3. Copie el Client ID y el Client secret. No los incluya en archivos del proyecto.
 
-Instale Firebase CLI, seleccione el proyecto y ejecute `firebase deploy`. GitHub puede seguir conservando el código, pero Firebase Hosting/Functions ejecutará la autenticación, almacenamiento y conexión segura.
+## 4. Guardar los secretos en Firebase
 
-## 4. Configurar Classroom
+Abra PowerShell dentro de la carpeta descomprimida y ejecute:
 
-1. Active Google Classroom API en Google Cloud.
-2. Configure la pantalla de consentimiento OAuth como aplicación externa.
-3. Durante el piloto, agregue docentes y estudiantes como usuarios de prueba.
-4. Cree un cliente OAuth de tipo aplicación web.
-5. Registre como redirección: `https://SU_DOMINIO/api/classroom/callback`.
-6. Guarde secretos, sin escribirlos en archivos:
-
-```bash
-firebase functions:secrets:set GOOGLE_OAUTH_CLIENT_ID
-firebase functions:secrets:set GOOGLE_OAUTH_CLIENT_SECRET
-firebase functions:secrets:set GOOGLE_OAUTH_REDIRECT_URI
+```powershell
+npx firebase-tools functions:secrets:set GOOGLE_OAUTH_CLIENT_ID --project mooc-505320
+npx firebase-tools functions:secrets:set GOOGLE_OAUTH_CLIENT_SECRET --project mooc-505320
+npx firebase-tools functions:secrets:set GOOGLE_OAUTH_REDIRECT_URI --project mooc-505320
 ```
 
-7. Cambie `classroomEnabled` a `true` en `firebase-config.js` y vuelva a desplegar.
+Firebase solicitará cada valor. Para `GOOGLE_OAUTH_REDIRECT_URI` escriba exactamente:
 
-## 5. Flujo previsto
+```text
+https://mooc-505320.web.app/api/classroom/callback
+```
 
-- El docente conecta Classroom y crea las tareas desde Misión NEXUS.
-- La aplicación conserva el vínculo entre sesión, evidencia y tarea.
-- El estudiante guarda su avance en Firestore, sube la evidencia a Storage, la adjunta a la tarea y confirma la entrega.
-- El docente califica y la función sincroniza la nota con Classroom.
-- Si Google bloquea el permiso, la evidencia permanece guardada y se ofrece descarga/entrega manual.
+## 5. Desplegar la integración
 
-## Privacidad
+Desde la misma carpeta ejecute:
 
-Solicite únicamente datos indispensables. Publique aviso de privacidad, periodo de conservación, mecanismo de rectificación/eliminación y responsable del tratamiento antes de incorporar estudiantes reales. No almacene contraseñas, tokens OAuth en el navegador ni claves privadas en GitHub.
+```powershell
+npx firebase-tools deploy --only functions,firestore:rules,hosting --project mooc-505320
+```
+
+El despliegue publica el backend OAuth, las reglas que protegen las tareas y la interfaz actualizada.
+
+## 6. Conectar y publicar
+
+1. Ingrese a **Portal docente → Classroom**.
+2. Pulse **Conectar Google Classroom** y autorice los permisos solicitados.
+3. Elija un curso activo y una sesión NEXUS.
+4. Revise título, instrucciones, fecha límite, hora y puntuación.
+5. Confirme la publicación y pulse **Publicar actividad**.
+6. NEXUS crea una tarea para todo el grupo y muestra el enlace en el historial docente y en **Tareas en Classroom** del portal estudiantil.
+
+Después de cerrar una sesión en **Modo Conducción**, el botón **Publicar actividad en Classroom** abre este mismo formulario con la sesión seleccionada.
+
+## Verificación mínima
+
+- La cuenta docente ve únicamente los cursos donde Google la reconoce como docente.
+- La tarea aparece en el tablón de Classroom con estado publicado.
+- Una cuenta estudiantil ve el enlace desde NEXUS y puede adjuntar y entregar archivos en Classroom.
+- Desconectar Classroom elimina del servidor los tokens de esa cuenta, sin borrar las tareas ya publicadas.
+
+## Privacidad y operación
+
+Solicite sólo los permisos necesarios, publique el aviso de privacidad institucional y documente el periodo de conservación. No almacene contraseñas, tokens OAuth en el navegador ni claves privadas en el repositorio. La entrega y los archivos permanecen bajo los controles de Google Classroom; NEXUS conserva sólo los metadatos necesarios para enlazar la sesión con la tarea publicada.
