@@ -1,4 +1,4 @@
-# Misión NEXUS v15 · Medición semestral integrada
+# Misión NEXUS v15.1 · Medición semestral integrada
 
 Esta versión conserva todo lo desarrollado hasta NEXUS v14 e integra dentro de la plataforma los instrumentos del piloto. Estudiantes y docentes reciben únicamente los cuestionarios correspondientes a la fase actual; el portal docente reúne cobertura, datos automáticos, comparación pre/post, experiencia estudiantil y valoración de la plataforma.
 
@@ -10,7 +10,8 @@ Plataforma universitaria de 96 horas con portales protegidos para docente y estu
 - Acceso directo desde cada sesión estudiantil a la lámina visual y a la explicación académica completa.
 - Tabla de posiciones semanal claramente rotulada en el menú y en el Centro de mando.
 - Estado visible cuando todavía no hay participantes o cuando falta publicar `firestore.rules`.
-- Identificador `v15` en ambos portales para comprobar que la actualización está activa.
+- Identificador `v15.1` en ambos portales para comprobar que la corrección de permisos está activa.
+- La medición reutiliza rutas protegidas ya existentes (`coursework`, `progress` y `teacherUsage`) para evitar el error «Missing or insufficient permissions» cuando el portal se actualiza antes que las reglas.
 - Renovación automática de la caché para evitar que el navegador conserve módulos anteriores.
 
 - 26 guiones docentes de 100 minutos, con intervención, respuestas esperadas, comprobaciones y continuidad independiente.

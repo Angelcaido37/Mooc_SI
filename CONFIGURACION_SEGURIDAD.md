@@ -8,7 +8,7 @@ En Firebase Console abra **Authentication → Sign-in method → Google** y habi
 
 Cree la base de datos y publique el contenido de `firestore.rules`. Estas reglas impiden que un usuario se otorgue a sí mismo el rol docente.
 
-En NEXUS v15 las mismas reglas protegen el calendario y los instrumentos del piloto. Cada estudiante sólo puede leer y escribir su propio documento en `studentInstrumentResponses`; las consultas agregadas quedan reservadas al rol docente. Las respuestas del docente se guardan en `teacherInstrumentResponses` y el calendario en `pilotConfig/default`.
+En NEXUS v15.1 la medición reutiliza rutas protegidas que ya forman parte de la plataforma: el calendario se guarda en `coursework/nexusPilotConfig`, las respuestas estudiantiles dentro de `progress/{uid}.measurementResponses` y las respuestas del docente dentro de `teacherUsage/{uid}.measurementResponses`. El estudiante sólo puede leer y escribir su propio progreso y el tablero agregado continúa reservado al rol docente. Las colecciones introducidas en v15 permanecen en las reglas únicamente como compatibilidad histórica.
 
 ## 3. Primer acceso y autorización docente
 

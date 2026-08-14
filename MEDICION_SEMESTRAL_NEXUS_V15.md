@@ -1,4 +1,4 @@
-# Medición semestral integrada · NEXUS v15
+# Medición semestral integrada · NEXUS v15.1
 
 ## Qué cambió
 
@@ -58,7 +58,7 @@ Al actualizar desde v14:
 
 1. sustituya la carpeta completa `public/course`;
 2. publique el archivo raíz `firestore.rules`;
-3. recargue la aplicación hasta verificar la etiqueta `v15`;
+3. recargue la aplicación hasta verificar la etiqueta `v15.1`;
 4. configure la fecha de inicio desde el portal docente.
 
-Las nuevas colecciones son `pilotConfig`, `studentInstrumentResponses` y `teacherInstrumentResponses`. Las reglas permiten al estudiante escribir únicamente su propio registro y reservan la lectura agregada para cuentas con rol docente.
+La corrección v15.1 reutiliza colecciones ya autorizadas por NEXUS: `coursework/nexusPilotConfig` para el calendario, `progress/{uid}.measurementResponses` para instrumentos estudiantiles y `teacherUsage/{uid}.measurementResponses` para la evaluación docente. Esto evita que una actualización parcial del portal bloquee la medición. Las reglas siguen limitando al estudiante a su propio registro y reservan las consultas agregadas para cuentas docentes.
