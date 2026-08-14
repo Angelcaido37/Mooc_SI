@@ -220,7 +220,7 @@
   const labelForStatus=status=>({completed:"Completado",due:"Disponible ahora",upcoming:"Próximamente",closed:"Periodo concluido",configuration:"Esperando calendario",not_applicable:"Participación no autorizada"}[status]||status);
 
   window.NEXUS_MEASUREMENT={
-    version:"15.0",
+    version:"15.1",
     likertAgreement,
     studentInstruments,
     teacherInstruments,

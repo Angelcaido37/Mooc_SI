@@ -153,21 +153,32 @@
   function exportIntegrated(){
     const studentByUid=new Map(studentDocs.map(doc=>[doc.uid,doc])),rows=[["participant_id","consentimiento","progreso_pct","visitas","minutos_activos","quiz_intentos","quiz_aciertos","pre_conocimiento","post_conocimiento","cambio_pp","pre_autoeficacia","post_autoeficacia","pre_motivacion","post_motivacion","sem4","sem8","sem12","cierre"]];
     tracking.forEach((row,index)=>{const doc=studentByUid.get(row.uid)||{},r=doc.responses||{},m=row.progress?.pilotMetrics||{},pre=r.s_pre?.answers?K.scoreKnowledge(r.s_pre.answers).pct:"",post=r.s_post?.answers?K.scoreKnowledge(r.s_post.answers).pct:"";rows.push([`E${String(index+1).padStart(3,"0")}`,r.s_pre?.participation||"pendiente",Math.min(100,Math.round(((row.progress?.lessons||[]).length/30)*100)),num(m.visits),Math.round(num(m.activeSeconds)/60),num(m.quizAttempts),num(m.quizCorrect),pre,post,pre!==""&&post!==""?post-pre:"",r.s_pre?.dimensionScores?.self_efficacy??"",r.s_post?.dimensionScores?.self_efficacy??"",r.s_pre?.dimensionScores?.motivation??"",r.s_post?.dimensionScores?.motivation??"",r.s_w4?"si":"no",r.s_w8?"si":"no",r.s_w12?"si":"no",r.s_post?"si":"no"]);});
-    const text="\ufeff"+rows.map(row=>row.map(csvCell).join(",")).join("\r\n"),link=document.createElement("a");link.href=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"}));link.download="nexus-v15-medicion-integrada-seudonimizada.csv";link.click();URL.revokeObjectURL(link.href);NEXUS_AUTH.recordTeacherUsage?.("export").catch(()=>{});
+    const text="\ufeff"+rows.map(row=>row.map(csvCell).join(",")).join("\r\n"),link=document.createElement("a");link.href=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"}));link.download="nexus-v15-1-medicion-integrada-seudonimizada.csv";link.click();URL.revokeObjectURL(link.href);NEXUS_AUTH.recordTeacherUsage?.("export").catch(()=>{});
   }
   function refresh(){if(document.querySelector("#measurementHub"))renderDashboard();else setTimeout(mount,0);}
   function stop(){stops.forEach(fn=>fn?.());stops=[];started=false;}
   function start(){
-    if(started||NEXUS_AUTH?.role!=="teacher")return;started=true;const fail=error=>notify(`Medición no disponible: ${error.message||error}`);
+    if(started||NEXUS_AUTH?.role!=="teacher")return;
+    started=true;
+    let optionalWarning=false;
+    const coreFail=error=>{
+      const detail=String(error?.code||error?.message||error||"");
+      notify(/permission-denied|insufficient permissions/i.test(detail)?"Permisos de medición desactualizados: publique el archivo raíz firestore.rules de NEXUS.":`Medición no disponible: ${error.message||error}`);
+    };
+    const optionalFail=()=>{
+      if(optionalWarning)return;
+      optionalWarning=true;
+      notify("Los instrumentos siguen disponibles; algunos indicadores automáticos no pudieron cargarse.");
+    };
     try{
-      stops.push(NEXUS_AUTH.watchPilotConfig(data=>{config=data||{};refresh();},fail));
-      stops.push(NEXUS_AUTH.watchAllStudentInstrumentResponses(data=>{studentDocs=data||[];refresh();},fail));
-      stops.push(NEXUS_AUTH.watchAllTeacherInstrumentResponses(data=>{teacherDocs=data||[];refresh();},fail));
-      stops.push(NEXUS_AUTH.watchTeacherTracking(data=>{tracking=data||[];refresh();},fail));
-      stops.push(NEXUS_AUTH.watchTeacherUsage(data=>{usage=data||{};refresh();},fail));
-      stops.push(NEXUS_AUTH.watchTeacherReflections(data=>{reflections=data||[];refresh();},fail));
-      stops.push(NEXUS_AUTH.watchTeacherSessionLogs(data=>{sessionLogs=data||[];refresh();},fail));
-    }catch(error){fail(error);}
+      stops.push(NEXUS_AUTH.watchPilotConfig(data=>{config=data||{};refresh();},coreFail));
+      stops.push(NEXUS_AUTH.watchAllStudentInstrumentResponses(data=>{studentDocs=data||[];refresh();},coreFail));
+      stops.push(NEXUS_AUTH.watchAllTeacherInstrumentResponses(data=>{teacherDocs=data||[];refresh();},coreFail));
+      stops.push(NEXUS_AUTH.watchTeacherTracking(data=>{tracking=data||[];refresh();},optionalFail));
+      stops.push(NEXUS_AUTH.watchTeacherUsage(data=>{usage=data||{};refresh();},optionalFail));
+      stops.push(NEXUS_AUTH.watchTeacherReflections(data=>{reflections=data||[];refresh();},optionalFail));
+      stops.push(NEXUS_AUTH.watchTeacherSessionLogs(data=>{sessionLogs=data||[];refresh();},optionalFail));
+    }catch(error){coreFail(error);}
   }
   window.addEventListener("hashchange",()=>setTimeout(mount,0));
   window.addEventListener("nexus-auth-change",event=>{if(event.detail.user&&event.detail.role==="teacher"){start();setTimeout(mount,0);}else if(!event.detail.user)stop();});

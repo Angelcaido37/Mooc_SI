@@ -138,12 +138,18 @@
     if(location.hash.replace(/^#\/?/,"").startsWith("measurement"))renderPage();else setTimeout(injectDueBanner,0);
   }
   function stop(){stops.forEach(fn=>fn?.());stops=[];started=false;}
+  const readableError=(label,error)=>{
+    const detail=String(error?.code||error?.message||error||"");
+    return /permission-denied|insufficient permissions/i.test(detail)
+      ? `${label}: falta publicar el archivo raíz firestore.rules de NEXUS.`
+      : `${label}: ${error?.message||error}`;
+  };
   function start(){
     if(started||NEXUS_AUTH?.role!=="student")return;
     started=true;
     try{
-      stops.push(NEXUS_AUTH.watchPilotConfig(data=>{config=data||{};refresh();},error=>notify(`Calendario no disponible: ${error.message}`)));
-      stops.push(NEXUS_AUTH.watchMyStudentInstrumentResponses(data=>{responseDoc=data||{};refresh();},error=>notify(`Respuestas no disponibles: ${error.message}`)));
+      stops.push(NEXUS_AUTH.watchPilotConfig(data=>{config=data||{};refresh();},error=>notify(readableError("Calendario no disponible",error))));
+      stops.push(NEXUS_AUTH.watchMyStudentInstrumentResponses(data=>{responseDoc=data||{};refresh();},error=>notify(readableError("Respuestas no disponibles",error))));
     }catch(error){notify(error.message);}
   }
   nav?.addEventListener("click",()=>{location.hash="measurement";});

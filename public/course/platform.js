@@ -103,42 +103,54 @@ function timestampMs(value){if(!value)return 0;if(typeof value.toMillis==="funct
 
 function watchPilotConfig(callback,onError=()=>{}){
   if(!currentUser)throw new Error("Inicie sesión para consultar el calendario del piloto.");
-  return api.onSnapshot(api.doc(db,"pilotConfig","default"),snap=>callback(snap.exists()?snap.data():{}),onError);
+  return api.onSnapshot(api.doc(db,"coursework","nexusPilotConfig"),snap=>callback(snap.exists()?snap.data():{}),onError);
 }
 async function savePilotConfig(config){
   if(!currentUser||currentRole!=="teacher")throw new Error("Se requiere autorización docente.");
-  await api.setDoc(api.doc(db,"pilotConfig","default"),{...config,durationWeeks:16,updatedBy:currentUser.uid,updatedAt:api.serverTimestamp()},{merge:true});
+  await api.setDoc(api.doc(db,"coursework","nexusPilotConfig"),{...config,recordType:"nexusPilotConfig",durationWeeks:16,updatedBy:currentUser.uid,updatedAt:api.serverTimestamp()},{merge:true});
 }
 async function saveStudentInstrumentResponse(instrumentId,response){
   if(!currentUser||currentRole!=="student")throw new Error("Se requiere una cuenta estudiantil.");
-  await api.setDoc(api.doc(db,"studentInstrumentResponses",currentUser.uid),{
-    responses:{[instrumentId]:{...response,instrumentId,submittedAt:api.serverTimestamp()}},
+  await api.setDoc(api.doc(db,"progress",currentUser.uid),{
+    measurementResponses:{[instrumentId]:{...response,instrumentId,submittedAt:api.serverTimestamp()}},
     updatedAt:api.serverTimestamp()
   },{merge:true});
   await recordActivity({route:"measurement",location:`Instrumento ${instrumentId} completado`,activityType:"instrument"});
 }
 function watchMyStudentInstrumentResponses(callback,onError=()=>{}){
   if(!currentUser||currentRole!=="student")throw new Error("Se requiere una cuenta estudiantil.");
-  return api.onSnapshot(api.doc(db,"studentInstrumentResponses",currentUser.uid),snap=>callback(snap.exists()?snap.data():{}),onError);
+  return api.onSnapshot(api.doc(db,"progress",currentUser.uid),snap=>{
+    const data=snap.exists()?snap.data():{};
+    callback({responses:data.measurementResponses||{},updatedAt:data.updatedAt});
+  },onError);
 }
 async function saveTeacherInstrumentResponse(instrumentId,response){
   if(!currentUser||currentRole!=="teacher")throw new Error("Se requiere autorización docente.");
-  await api.setDoc(api.doc(db,"teacherInstrumentResponses",currentUser.uid),{
-    responses:{[instrumentId]:{...response,instrumentId,submittedAt:api.serverTimestamp()}},
+  await api.setDoc(api.doc(db,"teacherUsage",currentUser.uid),{
+    measurementResponses:{[instrumentId]:{...response,instrumentId,submittedAt:api.serverTimestamp()}},
     updatedAt:api.serverTimestamp()
   },{merge:true});
 }
 function watchMyTeacherInstrumentResponses(callback,onError=()=>{}){
   if(!currentUser||currentRole!=="teacher")throw new Error("Se requiere autorización docente.");
-  return api.onSnapshot(api.doc(db,"teacherInstrumentResponses",currentUser.uid),snap=>callback(snap.exists()?snap.data():{}),onError);
+  return api.onSnapshot(api.doc(db,"teacherUsage",currentUser.uid),snap=>{
+    const data=snap.exists()?snap.data():{};
+    callback({responses:data.measurementResponses||{},updatedAt:data.updatedAt});
+  },onError);
 }
 function watchAllStudentInstrumentResponses(callback,onError=()=>{}){
   if(!currentUser||currentRole!=="teacher")throw new Error("Se requiere autorización docente.");
-  return api.onSnapshot(api.collection(db,"studentInstrumentResponses"),snap=>callback(snap.docs.map(d=>({uid:d.id,...d.data()}))),onError);
+  return api.onSnapshot(api.collection(db,"progress"),snap=>callback(snap.docs.map(d=>{
+    const data=d.data();
+    return{uid:d.id,responses:data.measurementResponses||{},updatedAt:data.updatedAt};
+  })),onError);
 }
 function watchAllTeacherInstrumentResponses(callback,onError=()=>{}){
   if(!currentUser||currentRole!=="teacher")throw new Error("Se requiere autorización docente.");
-  return api.onSnapshot(api.collection(db,"teacherInstrumentResponses"),snap=>callback(snap.docs.map(d=>({uid:d.id,...d.data()}))),onError);
+  return api.onSnapshot(api.doc(db,"teacherUsage",currentUser.uid),snap=>{
+    const data=snap.exists()?snap.data():{};
+    callback([{uid:currentUser.uid,responses:data.measurementResponses||{},updatedAt:data.updatedAt}]);
+  },onError);
 }
 
 async function callClassroom(name,data){if(!configured||!opts.classroomEnabled)throw new Error("Classroom aún no está configurado.");return(await api.httpsCallable(functions,name)(data)).data;}

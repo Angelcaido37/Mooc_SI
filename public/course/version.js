@@ -1,5 +1,5 @@
 (()=>{
-  const VERSION="15.0";
+  const VERSION="15.1";
   window.NEXUS_VERSION=VERSION;
   document.documentElement.dataset.nexusVersion=VERSION;
   if(!("serviceWorker" in navigator)||location.protocol==="file:")return;
