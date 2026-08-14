@@ -8,10 +8,11 @@
   <title>Portal estudiante · Misión NEXUS</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="v4.css">
+  <link rel="stylesheet" href="v4.css?v=15">
   <link rel="stylesheet" href="visual-lessons.css">
   <link rel="stylesheet" href="arcade.css">
-  <link rel="stylesheet" href="pilot.css">
+  <link rel="stylesheet" href="pilot.css?v=15">
+  <link rel="stylesheet" href="measurement.css?v=15">
 </head>
 <body class="student-locked">
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -26,6 +27,7 @@
         <span><strong>Misión NEXUS</strong><small>Portal estudiante</small></span>
       </button>
       <div class="top-actions">
+        <span class="release-chip">v15 · medición integrada</span>
         <button id="searchBtn" class="icon-btn" aria-label="Buscar en el curso">⌕</button>
         <button id="contrastBtn" class="icon-btn" aria-label="Cambiar contraste">◐</button>
         <button id="profileBtn" class="profile-chip" aria-label="Ver mi progreso"><span id="levelMini">N1</span><span id="xpMini">0 XP</span></button><button id="studentSignOut" class="icon-btn" aria-label="Cerrar sesión">⇥</button>
@@ -37,12 +39,13 @@
         <button class="nav-item active" data-nav="home"><span>⌂</span>Centro de mando</button>
         <button class="nav-item" data-nav="sessions"><span>▦</span>26 sesiones de clase</button>
         <button class="nav-item" data-nav="route"><span>◎</span>Ruta de aprendizaje</button>
+        <button class="nav-item" data-measurement-nav><span>◫</span>Mi participación y encuestas</button>
         <button class="nav-item" data-nav="story"><span>⬡</span>Historia NEXUS</button>
         <button class="nav-item" data-nav="project"><span>◇</span>Proyecto integrador</button>
         <button class="nav-item" data-nav="games"><span>✦</span>Juegos y retos</button>
         <button class="nav-item" data-nav="bonus"><span>🪙</span>Retos con bonificación</button>
         <button class="nav-item" data-nav="shop"><span>🛍</span>Tienda de avatares</button>
-        <button class="nav-item" data-nav="leaderboard"><span>♟</span>Constancia del grupo</button>
+        <button class="nav-item" data-nav="leaderboard"><span>🏆</span>Tabla de posiciones</button>
         <button class="nav-item" data-nav="lowcode"><span>⌘</span>Laboratorio low/no-code</button>
         <button class="nav-item" data-nav="technical"><span>{ }</span>Python y FastAPI</button>
         <button class="nav-item" data-nav="evidence"><span>✓</span>Evidencias y rúbricas</button>
@@ -79,8 +82,9 @@
   <dialog id="evidenceDialog" class="modal profile-modal"><form method="dialog" class="modal-head"><strong>Guardar y entregar evidencia</strong><button aria-label="Cerrar">×</button></form><div class="content-block"><p>Seleccione su evidencia. Primero se guarda de forma segura; si Classroom está conectado podrá adjuntarla y entregarla.</p><label>Identificador de evidencia<select id="evidenceId"><option value="u1">Evidencia 1</option><option value="u2">Evidencia 2</option><option value="u3">Evidencia 3</option><option value="u4">Evidencia 4</option><option value="u5">Evidencia 5</option><option value="u6">Evidencia 6</option></select></label><label>Archivo<input id="evidenceFile" type="file"></label><button id="uploadEvidence" type="button" class="btn btn-primary">Guardar evidencia</button><div id="evidenceCloudResult"></div><details><summary>Entregar también en Classroom</summary><p>Estos identificadores aparecen en el vínculo de la tarea y la entrega.</p><label>Curso<input id="classCourseId"></label><label>Tarea<input id="classWorkId"></label><label>Entrega<input id="classSubmissionId"></label><button id="turnInEvidence" type="button" class="btn btn-dark">Adjuntar y entregar</button></details></div></dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="version.js?v=15"></script>
   <script src="firebase-config.js"></script>
-  <script type="module" src="platform.js"></script>
+  <script type="module" src="platform.js?v=15"></script>
   <script src="classroom-links.js"></script>
   <script src="course-data.js"></script>
   <script src="teaching-data.js"></script>
@@ -89,8 +93,9 @@
   <script src="visual-lessons-data.js"></script>
   <script src="arcade-data.js"></script>
   <script src="pilot-data.js"></script>
+  <script src="measurement-data.js?v=15"></script>
   <script src="arcade.js"></script>
-  <script src="pilot.js"></script>
-  <script src="app.js"></script><script src="student-cloud.js"></script>
+  <script src="pilot.js?v=15"></script>
+  <script src="app.js?v=15"></script><script src="student-cloud.js?v=15"></script><script src="measurement-student.js?v=15"></script>
 </body>
 </html>
