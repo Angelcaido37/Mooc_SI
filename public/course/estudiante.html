@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="v4.css">
   <link rel="stylesheet" href="visual-lessons.css">
   <link rel="stylesheet" href="arcade.css">
+  <link rel="stylesheet" href="pilot.css">
 </head>
 <body class="student-locked">
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -36,16 +37,19 @@
         <button class="nav-item active" data-nav="home"><span>⌂</span>Centro de mando</button>
         <button class="nav-item" data-nav="sessions"><span>▦</span>26 sesiones de clase</button>
         <button class="nav-item" data-nav="route"><span>◎</span>Ruta de aprendizaje</button>
+        <button class="nav-item" data-nav="story"><span>⬡</span>Historia NEXUS</button>
         <button class="nav-item" data-nav="project"><span>◇</span>Proyecto integrador</button>
         <button class="nav-item" data-nav="games"><span>✦</span>Juegos y retos</button>
         <button class="nav-item" data-nav="bonus"><span>🪙</span>Retos con bonificación</button>
         <button class="nav-item" data-nav="shop"><span>🛍</span>Tienda de avatares</button>
+        <button class="nav-item" data-nav="leaderboard"><span>♟</span>Constancia del grupo</button>
         <button class="nav-item" data-nav="lowcode"><span>⌘</span>Laboratorio low/no-code</button>
         <button class="nav-item" data-nav="technical"><span>{ }</span>Python y FastAPI</button>
         <button class="nav-item" data-nav="evidence"><span>✓</span>Evidencias y rúbricas</button>
         <button class="nav-item" id="cloudEvidence"><span>☁</span>Guardar y entregar</button>
         <button class="nav-item" data-nav="glossary"><span>A</span>Glosario</button>
         <button class="nav-item" data-nav="help"><span>?</span>Cómo estudiar aquí</button>
+        <button class="nav-item" data-nav="how"><span>i</span>Cómo jugar NEXUS</button>
       </nav>
       <div class="sidebar-progress">
         <div class="ring" id="sideRing"><span id="sidePercent">0%</span></div>
@@ -70,6 +74,8 @@
     <div id="profileContent"></div>
   </dialog>
 
+  <dialog id="pilotOnboarding" class="pilot-dialog"><div id="pilotOnboardingContent"></div></dialog>
+
   <dialog id="evidenceDialog" class="modal profile-modal"><form method="dialog" class="modal-head"><strong>Guardar y entregar evidencia</strong><button aria-label="Cerrar">×</button></form><div class="content-block"><p>Seleccione su evidencia. Primero se guarda de forma segura; si Classroom está conectado podrá adjuntarla y entregarla.</p><label>Identificador de evidencia<select id="evidenceId"><option value="u1">Evidencia 1</option><option value="u2">Evidencia 2</option><option value="u3">Evidencia 3</option><option value="u4">Evidencia 4</option><option value="u5">Evidencia 5</option><option value="u6">Evidencia 6</option></select></label><label>Archivo<input id="evidenceFile" type="file"></label><button id="uploadEvidence" type="button" class="btn btn-primary">Guardar evidencia</button><div id="evidenceCloudResult"></div><details><summary>Entregar también en Classroom</summary><p>Estos identificadores aparecen en el vínculo de la tarea y la entrega.</p><label>Curso<input id="classCourseId"></label><label>Tarea<input id="classWorkId"></label><label>Entrega<input id="classSubmissionId"></label><button id="turnInEvidence" type="button" class="btn btn-dark">Adjuntar y entregar</button></details></div></dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -82,7 +88,9 @@
   <script src="technical-labs-data.js"></script>
   <script src="visual-lessons-data.js"></script>
   <script src="arcade-data.js"></script>
+  <script src="pilot-data.js"></script>
   <script src="arcade.js"></script>
+  <script src="pilot.js"></script>
   <script src="app.js"></script><script src="student-cloud.js"></script>
 </body>
 </html>

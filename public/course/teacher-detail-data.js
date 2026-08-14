@@ -62,10 +62,26 @@
       {kind:"summary",kicker:"SÍNTESIS Y TRANSFERENCIA",title:"Lo esencial de la sesión",items:essentials,question:s.exit[0],after:s.independentDetailed.map(x=>`${x.name} · ${x.min} min`)}
     ];
   };
+  const resourceByUnit={
+    u1:{pdf:"materiales/unidad-1-fundamentos.pdf",template:"plantillas/u1_lienzo_peas.csv",lab:"laboratorios/01_agente_reglas.ipynb"},
+    u2:{pdf:"materiales/unidad-2-conocimiento.pdf",template:"plantillas/u2_traza_razonamiento.csv",lab:"laboratorios/02_busqueda_bfs_astar.ipynb"},
+    u3:{pdf:"materiales/unidad-3-decision.pdf",template:"plantillas/u3_politica_umbral.csv",lab:"laboratorios/03_decision_umbral.ipynb"},
+    u4:{pdf:"materiales/unidad-4-percepcion.pdf",template:"plantillas/u4_matriz_percepcion.csv",lab:"laboratorios/04_percepcion_imagenes.ipynb"},
+    u5:{pdf:"materiales/unidad-5-generativa-y-rag.pdf",template:"plantillas/u5_evaluacion_rag.csv",lab:"laboratorios/05_rag_minimo.ipynb"},
+    u6:{pdf:"materiales/unidad-6-integracion.pdf",template:"plantillas/u6_matriz_pruebas.csv",lab:"laboratorios/06_fastapi_servicio.ipynb"}
+  };
+  const fallbackByMoment=[
+    "Escriba la pregunta detonante en el pizarrón. El grupo responde en una hoja, contrasta en pareja y usted registra cuatro ideas en dos columnas.",
+    "Explique con un mapa de conceptos dibujado en el pizarrón y use el cuaderno PDF descargado o impreso. Mantenga las pausas de predicción.",
+    "Dicte o escriba el caso por etapas. Cada pareja reconstruye el procedimiento en papel y muestra el siguiente paso antes de continuar.",
+    "Use la plantilla impresa o una hoja dividida en entrada, decisión, evidencia y límite. Asigne roles: portavoz, verificador y relator.",
+    "Haga una galería rápida con hojas o fotografías locales. Compare dos soluciones mediante los criterios visibles en el pizarrón.",
+    "Aplique un boleto de salida en papel. Lea en voz alta la actividad independiente y pida a una persona que la explique con sus palabras."
+  ];
   const make=s=>{
     const concepts=s.focus.split(/;|\.|:/).map(x=>x.trim()).filter(Boolean);
     const expectedCore=[`Distingue los conceptos centrales de ${s.title.toLowerCase()}.`,`Justifica decisiones con evidencia, límites y consecuencias.`,`Reconoce cuándo debe abstenerse o solicitar revisión humana.`];
-    return {
+    const detail={
       ...s,
       preparation:[...s.teacherChecklist,`Revisar el propósito: ${s.objective}`,`Preparar una versión visible del producto esperado: ${s.product}`],
       keyIdeas:concepts,
@@ -126,6 +142,22 @@
       classroomText:`Sesión ${s.number}: ${s.title}\n\nPropósito: ${s.objective}\n\nActividad independiente (${s.independentMinutes} min): ${s.independent.map(x=>`${x[0]} (${x[1]} min): ${x[2]}`).join(" ")}\n\nEvidencia: ${s.product}\n\nAntes de entregar, verifique que su trabajo incluya procedimiento, evidencia, límites y una reflexión sobre responsabilidad.`,
       projectable:null
     };
+    const resources=resourceByUnit[s.unit];
+    detail.resources=[
+      {label:"Cuaderno PDF de la misión",href:resources.pdf,kind:"Consulta",download:false},
+      {label:"Instrumento editable",href:resources.template,kind:"Actividad",download:true},
+      {label:"Laboratorio Python",href:resources.lab,kind:"Práctica",download:true},
+      {label:"Bitácora del proyecto",href:"plantillas/bitacora_proyecto.csv",kind:"Evidencia",download:true},
+      {label:"Vista del estudiante",href:`estudiante.html#visual/${s.lessonIds[0]}`,kind:"Portal",download:false}
+    ];
+    detail.teacherScript=detail.teacherScript.map((moment,index,all)=>({
+      ...moment,
+      fallback:fallbackByMoment[index],
+      transition:all[index+1]
+        ? `Cuando se cumpla la comprobación, anuncie: “Cerramos ${moment.title.toLowerCase()} y pasamos a ${all[index+1].title.toLowerCase()}”.`
+        : "Confirme la primera acción independiente, recoja la salida y cierre la sesión sin añadir una nueva explicación."
+    }));
+    return detail;
   };
   const sessions=T.sessions.map(make);
   sessions.forEach(s=>{s.projectable=projectable(s)});

@@ -1,0 +1,14 @@
+variable,nivel,definicion,interpretacion_precaucion
+visits,estudiante,Numero de sesiones de navegador registradas,No equivale a aprendizaje
+active_minutes,estudiante,Tiempo visible aproximado acumulado,Puede subestimar o sobreestimar atención real
+lessons,estudiante,Lecciones marcadas como completadas,Requiere punto de control previo
+quiz_attempts,estudiante,Intentos en puntos de control,Muchos intentos pueden representar práctica o dificultad
+quiz_correct,estudiante,Respuestas correctas en puntos de control,Interpretar junto con intentos
+bonus_attempts,estudiante,Inicios de retos voluntarios,No forma parte de la calificación
+bonus_wins,estudiante,Victorias en retos voluntarios,El premio sólo se acredita una vez
+story_views,estudiante,Aperturas de la narrativa,No implica lectura completa
+rules_views,estudiante,Aperturas de como jugar,No prueba comprensión
+goal_weeks,estudiante,Semanas con meta personal cumplida,La meta es configurable
+teacher_total_views,docente,Consultas acumuladas al portal docente,No mide calidad por sí sola
+teacher_saved_minutes,docente,Estimacion de tiempo ahorrado,Es una percepción autorreportada
+teacher_actionability,docente,Valoracion 1 a 5 del apoyo a decisiones,Debe acompañarse de ejemplos de acciones
