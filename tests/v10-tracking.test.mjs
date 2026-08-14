@@ -11,8 +11,8 @@ test("el primer acceso y la navegación registran ubicación académica",()=>{
   assert.match(platform,/async function recordActivity/);
   assert.match(platform,/currentLocation/);
   assert.match(platform,/lastActivityAt:api\.serverTimestamp\(\)/);
-  assert.match(student,/recordCurrent\('access'\)/);
-  assert.match(student,/addEventListener\('hashchange'/);
+  assert.match(student,/recordCurrent\(["']access["']\)/);
+  assert.match(student,/addEventListener\(["']hashchange["']/);
   assert.match(student,/Misión \$\{hit\.u\.number\}/);
 });
 
@@ -35,7 +35,7 @@ test("laboratorios abiertos y evidencias se registran sin confundirlos con avanc
   assert.match(teacher,/técnicos abiertos/);
 });
 
-test("el service worker identifica la versión con seguimiento",()=>{
-  assert.match(read("sw.js"),/nexus-v(?:10-seguimiento-tiempo-real|11-arcade-avatares-tienda|12-piloto-semestral-analitica|13-modo-conduccion-docente|14-separacion-rutas-y-tabla|15-medicion-semestral-integrada)/);
+test("el service worker identifica la plataforma académica de producción",()=>{
+  assert.match(read("sw.js"),/nexus-plataforma-academica-classroom-produccion-r1/);
   assert.match(read("sw.js"),/tracking\.css/);
 });

@@ -51,13 +51,15 @@ test("la bitácora se sincroniza sólo para la cuenta docente propietaria",()=>{
   assert.match(rules,/owner\(uid\) && teacher\(\)/);
 });
 
-test("la analítica y los instrumentos permiten evaluar el modo durante el semestre",()=>{
-  const teacher=read("teacher-app.js"),sw=read("sw.js");
+test("la analítica y los instrumentos integrados permiten evaluar el modo durante el semestre",()=>{
+  const teacher=read("teacher-app.js"),sw=read("sw.js"),measurement=read("measurement-data.js");
   assert.match(teacher,/conductorPlanBUses/);
   assert.match(teacher,/exportConductorLogs/);
-  assert.match(teacher,/evaluacion_modo_conduccion_v13\.xlsx/);
-  assert.match(sw,/nexus-v(?:13-modo-conduccion-docente|14-separacion-rutas-y-tabla|15-medicion-semestral-integrada)/);
+  assert.match(measurement,/t_w8/);
+  assert.match(measurement,/Modo Conducción/);
+  assert.doesNotMatch(teacher,/evaluacion_modo_conduccion_v13\.xlsx/);
+  assert.match(sw,/nexus-plataforma-academica-classroom-produccion-r1/);
   assert.match(sw,/teacher-conductor\.js/);
-  assert.match(sw,/evaluacion_modo_conduccion_v13\.xlsx/);
+  assert.doesNotMatch(sw,/evaluacion_modo_conduccion_v13\.xlsx/);
   assert.ok(fs.statSync("instrumentos/evaluacion_modo_conduccion_v13.xlsx").size>8000);
 });

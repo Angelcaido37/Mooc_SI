@@ -26,18 +26,18 @@ test("la tabla de posiciones es visible desde menú e inicio",()=>{
   assert.match(pilot,/function leaderboardError/);
 });
 
-test("el módulo docente identifica claramente la versión actualizada",()=>{
+test("el módulo docente presenta identidad académica de producción",()=>{
   const html=read("docente.html"),teacher=read("teacher-app.js"),conductor=read("teacher-conductor.js");
-  assert.match(html,/v15\.1 · medición semestral/);
+  assert.match(html,/Plataforma académica/);
   assert.match(html,/data-teacher-nav="conductor"/);
-  assert.match(teacher,/Medición semestral integrada/);
-  assert.match(teacher,/Abrir medición y resultados/);
+  assert.match(teacher,/EVALUACIÓN SEMESTRAL/);
+  assert.match(teacher,/Medición y resultados/);
   assert.match(conductor,/Plan B sin conexión/);
 });
 
-test("la actualización v15.1 reemplaza cachés anteriores",()=>{
+test("la publicación de producción reemplaza cachés anteriores",()=>{
   const sw=read("sw.js"),version=read("version.js"),student=read("estudiante.html"),teacher=read("docente.html"),login=read("index.html");
-  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
+  assert.match(sw,/nexus-plataforma-academica-classroom-produccion-r1/);
   assert.match(sw,/skipWaiting/);
   assert.match(sw,/clients\.claim/);
   assert.match(sw,/version\.js/);

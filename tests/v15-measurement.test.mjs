@@ -16,7 +16,7 @@ function measurementData(){
 
 test("cinco instrumentos estudiantiles y cinco docentes cubren el semestre",()=>{
   const data=measurementData();
-  assert.equal(data.version,"15.1");
+  assert.equal(data.version,"production-1");
   assert.equal(data.studentInstruments.length,5);
   assert.equal(data.teacherInstruments.length,5);
   assert.deepEqual(Array.from(data.studentInstruments,item=>item.openWeek),[1,4,8,12,15]);
@@ -85,12 +85,15 @@ test("el tablero docente integra cobertura, pre post, experiencia y resultados d
   assert.match(teacher,/No prueban causalidad/);
 });
 
-test("la versión 15 invalida caché y conserva los instrumentos como respaldo",()=>{
-  const sw=read("sw.js"),version=read("version.js");
-  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
+test("la publicación académica invalida caché y retira las plantillas heredadas de la interfaz",()=>{
+  const sw=read("sw.js"),version=read("version.js"),teacher=read("teacher-app.js"),dashboard=read("measurement-teacher.js");
+  assert.match(sw,/nexus-plataforma-academica-classroom-produccion-r1/);
   for(const file of ["measurement.css","measurement-data.js","measurement-student.js","measurement-teacher.js","measurement-scoring.js"])assert.match(sw,new RegExp(file.replace(".","\\.")));
-  assert.match(version,/VERSION="15\.1"/);
-  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
-  assert.match(sw,/encuesta_experiencia_estudiante_v12\.csv/);
-  assert.match(sw,/evaluacion_modo_conduccion_v13\.xlsx/);
+  assert.match(version,/VERSION="production-1"/);
+  for(const legacy of ["encuesta_experiencia_estudiante_v12","evaluacion_portal_docente_v12","medicion_pre_post_v12","diccionario_analitica_v12","evaluacion_modo_conduccion_v13"]){
+    assert.doesNotMatch(teacher,new RegExp(legacy));
+    assert.doesNotMatch(sw,new RegExp(legacy));
+  }
+  assert.match(teacher,/Instrumentos incorporados/);
+  assert.match(dashboard,/Exportar medición integrada/);
 });
