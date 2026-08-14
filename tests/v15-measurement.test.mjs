@@ -16,7 +16,7 @@ function measurementData(){
 
 test("cinco instrumentos estudiantiles y cinco docentes cubren el semestre",()=>{
   const data=measurementData();
-  assert.equal(data.version,"15.0");
+  assert.equal(data.version,"15.1");
   assert.equal(data.studentInstruments.length,5);
   assert.equal(data.teacherInstruments.length,5);
   assert.deepEqual(Array.from(data.studentInstruments,item=>item.openWeek),[1,4,8,12,15]);
@@ -62,6 +62,11 @@ test("el estudiante recibe avisos, línea de tiempo y captura automática separa
 test("Firestore guarda calendario e instrumentos con separación por rol",()=>{
   const platform=read("platform.js"),rules=fs.readFileSync("firestore.rules","utf8");
   for(const method of ["watchPilotConfig","savePilotConfig","saveStudentInstrumentResponse","watchMyStudentInstrumentResponses","saveTeacherInstrumentResponse","watchAllStudentInstrumentResponses","watchAllTeacherInstrumentResponses"])assert.match(platform,new RegExp(`function ${method}`));
+  assert.match(platform,/doc\(db,"coursework","nexusPilotConfig"\)/);
+  assert.match(platform,/measurementResponses/);
+  assert.match(platform,/collection\(db,"progress"\)/);
+  assert.doesNotMatch(platform,/collection\(db,"studentInstrumentResponses"\)/);
+  assert.doesNotMatch(platform,/collection\(db,"teacherInstrumentResponses"\)/);
   assert.match(rules,/match \/pilotConfig\/\{id\}/);
   assert.match(rules,/match \/studentInstrumentResponses\/\{uid\}/);
   assert.match(rules,/allow create,update: if owner\(uid\);/);
@@ -82,9 +87,10 @@ test("el tablero docente integra cobertura, pre post, experiencia y resultados d
 
 test("la versión 15 invalida caché y conserva los instrumentos como respaldo",()=>{
   const sw=read("sw.js"),version=read("version.js");
-  assert.match(sw,/nexus-v15-medicion-semestral-integrada/);
+  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
   for(const file of ["measurement.css","measurement-data.js","measurement-student.js","measurement-teacher.js","measurement-scoring.js"])assert.match(sw,new RegExp(file.replace(".","\\.")));
-  assert.match(version,/VERSION="15\.0"/);
+  assert.match(version,/VERSION="15\.1"/);
+  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
   assert.match(sw,/encuesta_experiencia_estudiante_v12\.csv/);
   assert.match(sw,/evaluacion_modo_conduccion_v13\.xlsx/);
 });

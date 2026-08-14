@@ -28,16 +28,16 @@ test("la tabla de posiciones es visible desde menú e inicio",()=>{
 
 test("el módulo docente identifica claramente la versión actualizada",()=>{
   const html=read("docente.html"),teacher=read("teacher-app.js"),conductor=read("teacher-conductor.js");
-  assert.match(html,/v15 · medición semestral/);
+  assert.match(html,/v15\.1 · medición semestral/);
   assert.match(html,/data-teacher-nav="conductor"/);
   assert.match(teacher,/Medición semestral integrada/);
   assert.match(teacher,/Abrir medición y resultados/);
   assert.match(conductor,/Plan B sin conexión/);
 });
 
-test("la actualización v15 reemplaza cachés anteriores",()=>{
+test("la actualización v15.1 reemplaza cachés anteriores",()=>{
   const sw=read("sw.js"),version=read("version.js"),student=read("estudiante.html"),teacher=read("docente.html"),login=read("index.html");
-  assert.match(sw,/nexus-v15-medicion-semestral-integrada/);
+  assert.match(sw,/nexus-v15-medicion-semestral-integrada-15-1-permisos/);
   assert.match(sw,/skipWaiting/);
   assert.match(sw,/clients\.claim/);
   assert.match(sw,/version\.js/);
