@@ -35,7 +35,7 @@
     id:"consent",
     type:"choice",
     dimension:"consent",
-    prompt:"Autorizo que mis respuestas se analicen de forma seudonimizada para evaluar y mejorar el piloto NEXUS. Mi decisión no modifica mi calificación ni mi acceso al curso.",
+    prompt:"Autorizo que mis respuestas se analicen de forma seudonimizada para evaluar y mejorar la experiencia académica en NEXUS. Mi decisión no modifica mi calificación ni mi acceso al curso.",
     options:["Sí, acepto participar","No acepto participar"]
   };
 
@@ -220,7 +220,7 @@
   const labelForStatus=status=>({completed:"Completado",due:"Disponible ahora",upcoming:"Próximamente",closed:"Periodo concluido",configuration:"Esperando calendario",not_applicable:"Participación no autorizada"}[status]||status);
 
   window.NEXUS_MEASUREMENT={
-    version:"15.1",
+    version:"production-1",
     likertAgreement,
     studentInstruments,
     teacherInstruments,

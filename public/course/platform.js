@@ -102,7 +102,7 @@ function watchTeacherTracking(callback,onError=()=>{}){
 function timestampMs(value){if(!value)return 0;if(typeof value.toMillis==="function")return value.toMillis();if(typeof value.toDate==="function")return value.toDate().getTime();const parsed=Date.parse(value);return Number.isFinite(parsed)?parsed:0;}
 
 function watchPilotConfig(callback,onError=()=>{}){
-  if(!currentUser)throw new Error("Inicie sesión para consultar el calendario del piloto.");
+  if(!currentUser)throw new Error("Inicie sesión para consultar el calendario académico.");
   return api.onSnapshot(api.doc(db,"coursework","nexusPilotConfig"),snap=>callback(snap.exists()?snap.data():{}),onError);
 }
 async function savePilotConfig(config){
@@ -153,7 +153,28 @@ function watchAllTeacherInstrumentResponses(callback,onError=()=>{}){
   },onError);
 }
 
-async function callClassroom(name,data){if(!configured||!opts.classroomEnabled)throw new Error("Classroom aún no está configurado.");return(await api.httpsCallable(functions,name)(data)).data;}
+async function callClassroom(name,data={}){
+  if(!configured||!opts.classroomEnabled)throw new Error("La integración con Classroom requiere completar la configuración institucional.");
+  return(await api.httpsCallable(functions,name)(data)).data;
+}
+async function connectClassroom(){
+  if(currentRole!=="teacher")throw new Error("Se requiere una cuenta docente autorizada.");
+  const result=await callClassroom("startClassroomOAuth");
+  if(!result?.url)throw new Error("No fue posible iniciar la autorización de Classroom.");
+  location.assign(result.url);
+}
+const classroomStatus=()=>callClassroom("classroomConnectionStatus");
+const listClassroomCourses=()=>callClassroom("listClassroomCourses");
+const publishClassroomAssignment=data=>callClassroom("createCoursework",data);
+const disconnectClassroom=()=>callClassroom("disconnectClassroom");
+function watchClassroomAssignments(callback,onError=()=>{}){
+  if(!currentUser)throw new Error("Inicie sesión para consultar las actividades de Classroom.");
+  const collection=api.collection(db,"classroomAssignments");
+  const source=currentRole==="teacher"
+    ?api.query(collection,api.where("creatorUid","==",currentUser.uid))
+    :api.query(collection,api.where("state","==","PUBLISHED"));
+  return api.onSnapshot(source,snap=>callback(snap.docs.map(doc=>({id:doc.id,...doc.data()})).sort((a,b)=>timestampMs(b.createdAt||b.creationTime)-timestampMs(a.createdAt||a.creationTime))),onError);
+}
 
 window.NEXUS_AUTH={
   init,signIn,signOut:signOutUser,saveProgress,saveLeaderboard,removeLeaderboard,watchLeaderboard,recordActivity,
@@ -161,6 +182,7 @@ window.NEXUS_AUTH={
   recordTeacherConductorEvent,markLabOpened,watchTeacherTracking,saveExitTicket,uploadEvidence,
   watchPilotConfig,savePilotConfig,saveStudentInstrumentResponse,watchMyStudentInstrumentResponses,
   saveTeacherInstrumentResponse,watchMyTeacherInstrumentResponses,watchAllStudentInstrumentResponses,watchAllTeacherInstrumentResponses,
-  callClassroom,get user(){return currentUser},get role(){return currentRole},configured
+  callClassroom,connectClassroom,classroomStatus,listClassroomCourses,publishClassroomAssignment,disconnectClassroom,watchClassroomAssignments,
+  get user(){return currentUser},get role(){return currentRole},configured
 };
 init().catch(error=>emit({error:error.message}));

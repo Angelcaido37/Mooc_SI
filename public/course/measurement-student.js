@@ -59,7 +59,7 @@
     nav?.classList.add("active");
     view.innerHTML=`
       <section class="measurement-hero">
-        <span class="eyebrow">EVALUACIÓN FORMATIVA DEL PILOTO</span>
+        <span class="eyebrow">EVALUACIÓN FORMATIVA DEL CURSO</span>
         <h1>Mi participación en NEXUS</h1>
         <p>Aquí encontrarás únicamente los instrumentos correspondientes a la fase actual. Tus respuestas no modifican la calificación; permiten comparar el inicio, el proceso y el cierre para mejorar la experiencia.</p>
         <div class="measurement-hero-meta"><span>${config.startDate?`Semana actual: ${current<1?"antes del inicio":current}`:"Calendario pendiente"}</span><span>${completed} de ${M.studentInstruments.length} instrumentos registrados</span><span>${dueNow.length?`${dueNow.length} disponible${dueNow.length===1?"":"s"} ahora`:"Sin pendientes actuales"}</span></div>
@@ -68,7 +68,7 @@
         <div class="measurement-section-head"><div><span class="eyebrow">REGISTRO PASO A PASO</span><h2>Fases del semestre</h2><p>La disponibilidad se calcula automáticamente desde la fecha de inicio configurada por el docente.</p></div><div class="measurement-legend"><span>Disponible</span><span>Completado</span><span>Próximo</span></div></div>
         <div class="measurement-phase-grid">${M.studentInstruments.map(phaseCard).join("")}</div>
         ${!config.startDate?'<div class="measurement-empty"><strong>El calendario aún no está configurado.</strong>Los instrumentos se habilitarán cuando el docente indique la fecha de inicio del semestre.</div>':""}
-        ${declined()?'<div class="measurement-privacy"><span>◉</span><div><strong>Tu decisión fue registrada.</strong><br>No se solicitarán los instrumentos posteriores y tus respuestas declaradas no se incluirán en la evaluación del piloto. La actividad operativa necesaria para guardar tu avance seguirá funcionando.</div></div>':""}
+        ${declined()?'<div class="measurement-privacy"><span>◉</span><div><strong>Tu decisión fue registrada.</strong><br>No se solicitarán los instrumentos posteriores y tus respuestas declaradas no se incluirán en la evaluación académica de la plataforma. La actividad operativa necesaria para guardar tu avance seguirá funcionando.</div></div>':""}
       </section>
       <section class="content-block measurement-section">
         <div class="measurement-section-head"><div><span class="eyebrow">CAPTURA AUTOMÁTICA</span><h2>Datos de mi recorrido</h2><p>Se actualizan al usar la plataforma; no equivalen por sí solos a aprendizaje.</p></div></div>

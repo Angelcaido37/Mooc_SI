@@ -1,6 +1,6 @@
 window.NEXUS_ARCADE_DATA={
   avatars:[
-    {id:"pilot",icon:"🧑‍🚀",name:"Piloto NEXUS",tagline:"Explorador de sistemas",cost:0,tone:"#38d9d0",className:"pilot"},
+    {id:"pilot",icon:"🧑‍🚀",name:"Explorador NEXUS",tagline:"Especialista en sistemas",cost:0,tone:"#38d9d0",className:"pilot"},
     {id:"doctor-byte",icon:"🥼",name:"Doctor Byte",tagline:"Cura errores con evidencia",cost:90,tone:"#43c59e",className:"doctor"},
     {id:"tejedor-neon",icon:"🕸️",name:"Tejedor Neón",tagline:"Conecta datos y decisiones",cost:140,tone:"#ef476f",className:"weaver"},
     {id:"mercenario-glitch",icon:"🥷",name:"Mercenario Glitch",tagline:"Caza fallos y ataques",cost:170,tone:"#7c5cff",className:"glitch"},
