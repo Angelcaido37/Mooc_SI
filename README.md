@@ -1,6 +1,6 @@
-# Misión NEXUS v9 · Sistemas Inteligentes
+# Misión NEXUS v11 · Sistemas Inteligentes
 
-Esta versión conserva las 30 lecciones híbridas y corrige el material proyectable de las 26 sesiones. Las diapositivas visibles para el grupo contienen el texto explicativo, los conceptos, el proceso y el ejemplo razonado; las indicaciones de conducción permanecen en el guion privado del docente.
+Esta versión conserva las 30 lecciones híbridas, las presentaciones explicativas y el seguimiento docente en tiempo real. Añade una capa de gamificación responsable con insignias automáticas, NexoCoins, cuatro retos de destreza mental, seis avatares originales, tienda cosmética y señales sonoras opcionales.
 
 Plataforma universitaria de 96 horas con portales protegidos para docente y estudiante.
 
@@ -14,6 +14,12 @@ Plataforma universitaria de 96 horas con portales protegidos para docente y estu
 - Seis cuadernos Colab documentados: reglas, BFS/A*, umbrales, percepción, RAG y FastAPI.
 - Acceso único con Google. El rol docente sólo se obtiene desde `roles/{UID}` en Firestore.
 - Progreso sincronizado en Firestore; no existe modo demostración.
+- Seguimiento docente en tiempo real con estudiante, progreso, ubicación actual, laboratorios, evidencias y última actividad.
+- Insignias automáticas por completar misiones, con nombre y significado separados visualmente.
+- NexoCoins obtenidas sólo mediante retos opcionales; no alteran XP ni calificación.
+- Tienda con seis avatares originales y selección persistente.
+- Retos de rapidez, memoria, clasificación y reparación de errores.
+- Jingles chiptune originales y desactivables para logros, niveles y compras.
 
 ## Puesta en marcha
 
@@ -23,4 +29,4 @@ Storage y automatización de Classroom quedan desactivados porque requieren serv
 
 ## Validación
 
-Ejecute `node --test tests/v4-security.test.mjs tests/v5-visual.test.mjs tests/v9-projectables.test.mjs tests/static-course.test.mjs`. Las pruebas verifican la protección de acceso, el rol en Firestore, los cuadernos técnicos, las 30 lecciones híbridas y las 234 diapositivas explicativas.
+Ejecute `node --test tests/v4-security.test.mjs tests/v5-visual.test.mjs tests/v9-projectables.test.mjs tests/v10-tracking.test.mjs tests/v11-arcade.test.mjs tests/static-course.test.mjs`. Las pruebas verifican acceso, seguimiento, gamificación responsable, cuadernos técnicos, 30 lecciones híbridas y 234 diapositivas explicativas.
