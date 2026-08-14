@@ -36,6 +36,6 @@ test("laboratorios abiertos y evidencias se registran sin confundirlos con avanc
 });
 
 test("el service worker identifica la versión con seguimiento",()=>{
-  assert.match(read("sw.js"),/nexus-v(?:10-seguimiento-tiempo-real|11-arcade-avatares-tienda)/);
+  assert.match(read("sw.js"),/nexus-v(?:10-seguimiento-tiempo-real|11-arcade-avatares-tienda|12-piloto-semestral-analitica|13-modo-conduccion-docente)/);
   assert.match(read("sw.js"),/tracking\.css/);
 });
