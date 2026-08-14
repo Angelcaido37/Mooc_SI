@@ -1,0 +1,154 @@
+.tracking-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.tracking-summary article {
+  background: #fff;
+  border: 1px solid #dce4f2;
+  border-radius: 18px;
+  padding: 1.1rem;
+}
+
+.tracking-summary strong {
+  display: block;
+  color: #087f8c;
+  font-size: 1.8rem;
+}
+
+.tracking-summary span {
+  color: #56657c;
+  font-size: .85rem;
+}
+
+.tracking-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tracking-toolbar h2,
+.tracking-toolbar p {
+  margin-top: 0;
+}
+
+.tracking-live {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  white-space: nowrap;
+}
+
+.tracking-live i {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+  background: #16a36a;
+  box-shadow: 0 0 0 4px #dff7ec;
+}
+
+.tracking-table th {
+  white-space: nowrap;
+}
+
+.tracking-table td {
+  min-width: 125px;
+  vertical-align: middle;
+}
+
+.tracking-student {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 210px;
+}
+
+.tracking-student img,
+.tracking-student > span {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e8f7f8;
+  color: #087f8c;
+  display: grid;
+  place-content: center;
+}
+
+.tracking-student strong,
+.tracking-student small,
+.tracking-block {
+  display: block;
+}
+
+.tracking-student small,
+.tracking-block {
+  color: #66758a;
+  margin-top: .2rem;
+}
+
+.tracking-progress > span {
+  display: block;
+  width: 110px;
+  height: 7px;
+  border-radius: 99px;
+  background: #e2e8f2;
+  overflow: hidden;
+  margin: .35rem 0;
+}
+
+.tracking-progress i {
+  display: block;
+  height: 100%;
+  background: #08a6b5;
+}
+
+.tracking-now {
+  color: #087f62;
+  font-weight: 800;
+}
+
+.tracking-empty {
+  text-align: center;
+  padding: 2rem !important;
+}
+
+.tracking-empty strong,
+.tracking-empty span {
+  display: block;
+}
+
+.tracking-empty span {
+  color: #66758a;
+  margin-top: .35rem;
+}
+
+.tracking-error {
+  color: #9c2f2f;
+}
+
+.tracking-table tbody tr {
+  transition: background .2s;
+}
+
+.tracking-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+@media (max-width: 900px) {
+  .tracking-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-toolbar {
+    flex-direction: column;
+  }
+
+  .tracking-table {
+    min-width: 980px;
+  }
+}
