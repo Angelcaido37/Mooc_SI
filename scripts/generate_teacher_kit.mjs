@@ -26,10 +26,10 @@ const lines=[
   "",
   "## Uso recomendado",
   "",
-  "1. Antes: abra el guion de la sesión, pruebe el juego o laboratorio y publique en Classroom sólo la consigna independiente.",
+  "1. Antes: abra el guion de la sesión, pruebe el juego o laboratorio y revise y habilite en NEXUS la evidencia o consigna independiente.",
   "2. Durante: explique, permita dudas, resuelva el ejemplo con el grupo, observe el procedimiento y retroalimente.",
   "3. Después: indique la ruta independiente y la evidencia; no vuelva a contabilizar lo ya realizado en clase.",
-  "4. Classroom conserva entregas y calificaciones; los XP del sitio son formativos.",
+  "4. NEXUS conserva entregas, rúbricas y calificaciones; los XP son formativos y no alteran la nota académica.",
   ""
 ];
 for(const s of T.sessions){

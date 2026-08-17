@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";import fs from "node:fs";import path from "node:path";
+const root=path.resolve("public/course"),read=f=>fs.readFileSync(path.join(root,f),"utf8");
+test("no hay ingreso demostrativo",()=>{for(const f of ["index.html","platform.js","teacher-app.js"])assert.doesNotMatch(read(f),/modo demostraci[oó]n|entrar como docente|demoTeacher/i)});
+test("el portal docente inicia cerrado y valida rol",()=>{const h=read("docente.html"),j=read("teacher-app.js"),p=read("platform.js");assert.match(h,/id="teacherShell" hidden/);assert.match(h,/id="secureGate"/);assert.match(j,/role!=="teacher"/);assert.match(p,/getDoc\(api\.doc\(db,"roles",user\.uid\)\)/)});
+test("el portal estudiante inicia oculto hasta autenticar",()=>{const h=read("estudiante.html"),j=read("student-cloud.js");assert.match(h,/id="app" hidden/);assert.match(j,/if\(!user\).*location\.replace/);assert.match(j,/app\.hidden=false/)});
+test("cierre de sesión siempre redirige",()=>{for(const f of ["teacher-app.js","student-cloud.js"]){const s=read(f);assert.match(s,/NEXUS_AUTH\.signOut\(\)/);assert.match(s,/finally\{location\.replace/)}});
+test("hay seis cuadernos válidos",()=>{const dir=path.join(root,"laboratorios"),files=fs.readdirSync(dir).filter(x=>x.endsWith(".ipynb"));assert.equal(files.length,6);for(const f of files){const n=JSON.parse(fs.readFileSync(path.join(dir,f)));assert.equal(n.nbformat,4);assert.ok(n.cells.length>=5)}});

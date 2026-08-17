@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+const e=fs.readFileSync('public/course/evaluation-module.js','utf8'),p=fs.readFileSync('public/course/platform-local.js','utf8'),b=fs.readFileSync('backend/app.py','utf8'),j=JSON.parse(fs.readFileSync('package.json','utf8'));
+test('token activo moderno sin v15/v16',()=>{assert.match(e,/nexus1[78]-token/);assert.match(p,/nexus1[78]-token/);assert.doesNotMatch(e,/nexus15-token|nexus16-token/)});test('hardening heredado',()=>{for(const x of ['SESSION_HOURS','MAX_UPLOAD_MB','STUDENT_KEYS','ALLOWED_EXT'])assert.match(b,new RegExp(x))});test('versión no retrocede',()=>assert.ok(Number(j.version.split('.')[0])>=17));
