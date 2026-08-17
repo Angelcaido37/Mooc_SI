@@ -1,0 +1,54 @@
+name: Publicar NEXUS 18 en GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+
+      - name: Crear configuración del backend
+        env:
+          NEXUS_API_BASE: ${{ vars.NEXUS_API_BASE }}
+        run: |
+          if [ -z "$NEXUS_API_BASE" ]; then
+            echo "ERROR: configura la variable NEXUS_API_BASE"
+            exit 1
+          fi
+
+          cat > public/course/runtime-config.js <<EOF
+          window.NEXUS_CONFIG = {
+            apiBase: "${NEXUS_API_BASE}"
+          };
+          EOF
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empaquetar sitio
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public/course
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
