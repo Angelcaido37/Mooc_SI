@@ -141,7 +141,7 @@
   const readableError=(label,error)=>{
     const detail=String(error?.code||error?.message||error||"");
     return /permission-denied|insufficient permissions/i.test(detail)
-      ? `${label}: falta publicar el archivo raíz firestore.rules de NEXUS.`
+      ? `${label}: no fue posible acceder al backend de NEXUS. Verifique su conexión e inténtelo de nuevo.`
       : `${label}: ${error?.message||error}`;
   };
   function start(){

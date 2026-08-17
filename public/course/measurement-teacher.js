@@ -163,7 +163,7 @@
     let optionalWarning=false;
     const coreFail=error=>{
       const detail=String(error?.code||error?.message||error||"");
-      notify(/permission-denied|insufficient permissions/i.test(detail)?"Permisos de medición desactualizados: publique el archivo raíz firestore.rules de NEXUS.":`Medición no disponible: ${error.message||error}`);
+      notify(/permission-denied|insufficient permissions/i.test(detail)?"No fue posible guardar la medición en el backend de NEXUS. Verifique que el servidor esté activo y que su sesión siga vigente.":`Medición no disponible: ${error.message||error}`);
     };
     const optionalFail=()=>{
       if(optionalWarning)return;

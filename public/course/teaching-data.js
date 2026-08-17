@@ -30,7 +30,7 @@
         ["Evidencia o proyecto",independentMinutes-Math.round(independentMinutes*.22)-Math.round(independentMinutes*.30)-Math.round(independentMinutes*.18),product]
       ],
       exit:["Explica la decisión más importante de la sesión en una frase.","Menciona un caso en el que el método fallaría.","Escribe una duda concreta o una prueba que todavía falta."],
-      teacherChecklist:["Abrir el recurso proyectable y probar el interactivo antes de la sesión.","Preparar equipos o parejas y distribuir el archivo de trabajo.","No mostrar la solución antes de la primera propuesta estudiantil.","Cerrar indicando exactamente qué continúa en la ruta independiente y qué se entrega en Classroom."]
+      teacherChecklist:["Abrir el recurso proyectable y probar el interactivo antes de la sesión.","Preparar equipos o parejas y distribuir el archivo de trabajo.","No mostrar la solución antes de la primera propuesta estudiantil.","Cerrar indicando exactamente qué continúa en la ruta independiente y qué se entrega en NEXUS."]
     };
   };
 
@@ -72,6 +72,6 @@
     sessions,
     totals:{officialTheoryHours:22,officialPracticeHours:30,officialIndependentHours:44,teacherRealMinutes:2600,independentMinutes:2640},
     note:"Las 52 horas con conducción docente equivalen a 26 sesiones de 100 minutos reales (dos horas académicas de 50 minutos). Las 44 horas independientes se contabilizan aparte y no duplican actividades de clase.",
-    roles:{teacher:"Explica, pregunta, ejemplifica, organiza la práctica, observa procedimientos, retroalimenta y cierra.",student:"Anticipa, pregunta, argumenta, practica, compara, corrige y registra evidencia.",platform:"Proporciona información, recursos proyectables, ejercicios, simuladores, juegos, retroalimentación y continuidad.",classroom:"Publica consignas oficiales, recibe evidencias, conserva rúbricas, comentarios y calificaciones."}
+    roles:{teacher:"Explica, pregunta, ejemplifica, organiza la práctica, observa procedimientos, retroalimenta y cierra.",student:"Anticipa, pregunta, argumenta, practica, compara, corrige y registra evidencia.",platform:"Proporciona información, recursos proyectables, ejercicios, simuladores, juegos, retroalimentación y continuidad.",evidence:"Publica consignas oficiales, recibe evidencias, conserva rúbricas, comentarios y calificaciones."}
   };
 })();

@@ -122,24 +122,24 @@
           "Pizarra de contraste y orientaciones docentes.",
           "Cada equipo registra una corrección y su motivo."),
         phase("Cierre, salida y consigna",10,
-          `Recupere tres ideas centrales. Elija una pregunta de salida. Finalmente explique, con pantalla visible, cada actividad independiente y precise qué se guarda aquí y qué se entrega en Classroom: ${s.product}`,
+          `Recupere tres ideas centrales. Elija una pregunta de salida. Finalmente explique, con pantalla visible, cada actividad independiente y precise qué se guarda aquí y qué se entrega en NEXUS: ${s.product}`,
           "Sintetiza, responde individualmente la salida y verifica la consigna posterior.",
           ["Conclusión breve y específica.","Una duda o límite auténtico.","Comprensión de la actividad independiente."],
           "Si la salida es vaga, pida un ejemplo o una evidencia concreta. No convierta este momento en una nueva exposición.",
-          "Formulario de salida, ruta independiente y enlace a Classroom.",
+          "Formulario de salida, ruta independiente y enlace a NEXUS.",
           "Antes de salir, cada estudiante identifica la primera acción que realizará fuera de clase.")
       ],
       independentDetailed:s.independent.map(([name,min,action],i)=>({
         name,min,action,
         mode:i===3?"Individual o por equipo según la evidencia":"Individual",
         platform:i<3?"Se registra avance, intento y retroalimentación":"Se guarda borrador y estado de evidencia",
-        classroom:i===3?`Entregar: ${s.product}`:"No se entrega; es actividad formativa",
+        evidence:i===3?`Entregar: ${s.product}`:"No se entrega; es actividad formativa",
         teacherFollowUp:i===0?"Revisar ideas que el grupo marcó como difíciles.":i===1?"Observar patrones de error.":i===2?"Recuperar el error más frecuente al iniciar la siguiente sesión.":"Retroalimentar con la rúbrica correspondiente."
       })),
-      materials:["Diapositivas o modo proyección","Hoja de trabajo descargable",s.lab,s.game,"Formulario de salida","Consigna y rúbrica de Classroom"],
+      materials:["Diapositivas o modo proyección","Hoja de trabajo descargable",s.lab,s.game,"Formulario de salida","Consigna y rúbrica de NEXUS"],
       firstCases:s.number===1?firstCases:null,
       expected:expectedCore,
-      classroomText:`Sesión ${s.number}: ${s.title}\n\nPropósito: ${s.objective}\n\nActividad independiente (${s.independentMinutes} min): ${s.independent.map(x=>`${x[0]} (${x[1]} min): ${x[2]}`).join(" ")}\n\nEvidencia: ${s.product}\n\nAntes de entregar, verifique que su trabajo incluya procedimiento, evidencia, límites y una reflexión sobre responsabilidad.`,
+      evidenceText:`Sesión ${s.number}: ${s.title}\n\nPropósito: ${s.objective}\n\nActividad independiente (${s.independentMinutes} min): ${s.independent.map(x=>`${x[0]} (${x[1]} min): ${x[2]}`).join(" ")}\n\nEvidencia: ${s.product}\n\nAntes de entregar, verifique que su trabajo incluya procedimiento, evidencia, límites y una reflexión sobre responsabilidad.`,
       projectable:null
     };
     const resources=resourceByUnit[s.unit];
