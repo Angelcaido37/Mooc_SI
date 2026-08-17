@@ -1,1 +1,1 @@
-window.NEXUS_VERSION='18.0.0';
+window.NEXUS_VERSION="19.0";

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#071329">
-  <title>Portal docente · Misión NEXUS</title>
+  <title>Portal docente · NEXUS 19</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="portal.css">
   <link rel="stylesheet" href="pilot.css?v=18">
@@ -12,25 +12,28 @@
   <link rel="stylesheet" href="measurement.css?v=prod1">
   <link rel="stylesheet" href="evaluation.css?v=18">
   <link rel="stylesheet" href="traceability.css?v=18">
-<link rel="stylesheet" href="accessibility.css?v=18"></head>
+<link rel="stylesheet" href="accessibility.css?v=18"><link rel="stylesheet" href="nexus19.css?v=19"></head>
 <body class="teacher-locked">
   <div id="secureGate" class="secure-gate">
     <div class="auth-card"><span class="brand-mark">N</span><h1>Acceso docente protegido</h1><p id="gateMessage">Verificando su sesión y autorización…</p><button id="gateLogin" class="btn btn-primary" hidden>Iniciar sesión en NEXUS</button><a id="studentRedirect" class="btn btn-outline" href="estudiante.html" hidden>Ir al portal estudiantil</a></div>
   </div>
   <div id="teacherShell" hidden>
     <a class="skip-link" href="#main">Saltar al contenido</a>
-    <header class="topbar"><a class="brand" href="docente.html"><span class="brand-mark">N</span><span><strong>Misión NEXUS</strong><small>Portal docente</small></span></a><div class="top-actions"><span class="release-chip">Plataforma académica</span><span id="teacherIdentity" class="status-chip"></span><button id="signOut" class="btn btn-outline">Cerrar sesión</button></div></header>
+    <header class="topbar"><a class="brand" href="docente.html"><span class="brand-mark">N</span><span><strong>NEXUS 19</strong><small>Portal docente</small></span></a><div class="top-actions"><span class="release-chip">Conducción universitaria</span><span id="teacherIdentity" class="status-chip"></span><button id="signOut" class="btn btn-outline">Cerrar sesión</button></div></header>
     <aside class="sidebar">
       <nav>
+        <p class="nav-section-label">Visión general</p>
         <button class="nav-item active" data-teacher-nav="dashboard"><span>⌂</span>Panel docente</button>
-        <button class="nav-item" data-teacher-nav="conductor"><span>▶</span>Conducir clase</button>
-        <button class="nav-item" data-teacher-nav="sessions"><span>▦</span>26 guiones detallados</button>
+        <p class="nav-section-label">Antes de clase</p>
+        <button class="nav-item" data-teacher-nav="sessions"><span>▦</span>Manual docente · 26 sesiones</button>
         <button class="nav-item" data-teacher-nav="projectables"><span>▰</span>Material proyectable</button>
-        <button class="nav-item" data-teacher-nav="labs"><span>⌘</span>Python y low/no-code</button>
+        <button class="nav-item" data-teacher-nav="labs"><span>⌘</span>Laboratorios y recursos</button>
+        <p class="nav-section-label">Durante la clase</p>
+        <button class="nav-item" data-teacher-nav="conductor"><span>▶</span>Conducir clase</button>
+        <p class="nav-section-label">Después de clase</p>
+        <button class="nav-item" data-teacher-nav="evaluation"><span>✓</span>Evaluar y retroalimentar</button>
         <button class="nav-item" data-teacher-nav="students"><span>◎</span>Seguimiento</button>
-        <button class="nav-item" data-teacher-nav="analytics"><span>◫</span>Medición y resultados</button>
-        <button class="nav-item" data-teacher-nav="evaluation"><span>✓</span>Evaluación y analítica</button>
-        <button class="nav-item" data-teacher-nav="depth"><span>◈</span>Preparación académica</button>
+        <button class="nav-item" data-teacher-nav="analytics"><span>◫</span>Analizar aprendizaje</button>
         <button class="nav-item" data-teacher-nav="traceability"><span>⌁</span>Trazabilidad docente</button>
         <a class="nav-item" href="institutional.html"><span>⚙</span>Gobernanza institucional</a>
         <a class="nav-item" href="estudiante.html"><span>◉</span>Vista estudiante</a>
@@ -40,8 +43,8 @@
     <main id="main" class="main teacher-main"><div id="teacherView"></div></main>
   </div>
   <div id="teacherToast" class="toast"></div>
-  <script src="version.js?v=18"></script>
-  <script src="runtime-config.js?v=18"></script><script src="platform-local.js?v=18"></script>
+  <script src="version.js?v=19"></script>
+  <script src="runtime-config.js?v=19"></script><script src="platform-local.js?v=19"></script>
   <script src="course-data.js"></script>
   <script src="teaching-data.js"></script>
   <script src="teacher-detail-data.js"></script>
@@ -51,12 +54,15 @@
   <script src="teacher-conductor.js?v=18"></script>
   <script src="evaluation-data.js?v=18"></script>
   <script src="academic-depth-data.js?v=18"></script>
+  <script src="nexus19-pedagogy.js?v=19"></script>
+  <script src="nexus19-activities.js?v=19"></script>
+  <script src="nexus19-resources.js?v=19"></script>
   <script src="traceability-data.js?v=18"></script>
   <script src="pedagogy-data.js?v=18"></script>
   <script src="evaluation-module.js?v=18"></script>
   <script src="academic-depth-teacher.js?v=18"></script>
   <script src="traceability-teacher.js?v=18"></script>
-  <script src="teacher-app.js?v=18"></script>
+  <script src="teacher-app.js?v=19"></script>
   <script src="measurement-teacher.js?v=prod1"></script>
 <script src="accessibility.js?v=18"></script></body>
 </html>
