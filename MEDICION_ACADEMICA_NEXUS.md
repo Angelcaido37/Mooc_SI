@@ -2,7 +2,7 @@
 
 ## Qué cambió
 
-Los instrumentos se aplican dentro de NEXUS, se guardan en Firestore y alimentan el tablero docente. Las plantillas CSV/XLSX heredadas ya no se muestran en la interfaz ni se precargan en el caché; no hace falta descargarlas ni volver a subirlas. La exportación CSV del tablero se conserva porque genera resultados seudonimizados, no un formulario vacío.
+Los instrumentos se aplican dentro de NEXUS, se guardan en almacenamiento interno NEXUS y alimentan el tablero docente. Las plantillas CSV/XLSX heredadas ya no se muestran en la interfaz ni se precargan en el caché; no hace falta descargarlas ni volver a subirlas. La exportación CSV del tablero se conserva porque genera resultados seudonimizados, no un formulario vacío.
 
 ## Calendario de aplicación
 

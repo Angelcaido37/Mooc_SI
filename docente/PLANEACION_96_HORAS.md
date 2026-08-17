@@ -1,3 +1,5 @@
+> **NEXUS 16:** documento actualizado para operación autónoma dentro de NEXUS.
+
 # Planeación sintética de 96 horas
 
 | Unidad | Teoría | Práctica | Independiente | Total | Evidencia |
@@ -27,6 +29,6 @@ Cada unidad combina las cinco lecciones digitales, un laboratorio formativo y el
 - 22 horas teóricas equivalen a 1,100 minutos dentro de esas sesiones.
 - 30 horas prácticas equivalen a 1,500 minutos dentro de esas sesiones.
 - 44 horas independientes equivalen a 2,640 minutos fuera de clase.
-- Classroom organiza la entrega, pero no agrega tiempo cuando la actividad ya está contabilizada.
+- NEXUS organiza la entrega y conserva la actividad dentro de las horas ya contabilizadas.
 
 El desglose de cada sesión, con su tiempo teórico, práctico e independiente, está en `GUIA_26_SESIONES_Y_CLAVES.md` y en la sección «26 sesiones de clase» de la plataforma.

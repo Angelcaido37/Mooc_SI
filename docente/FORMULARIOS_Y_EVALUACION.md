@@ -1,3 +1,5 @@
+> **NEXUS 16:** documento actualizado para evaluación interna.
+
 # Formularios y evaluación formativa
 
 ## Formularios incluidos en el sitio
@@ -6,7 +8,7 @@ Cada una de las 30 lecciones contiene un punto de control HTML autocorregible co
 
 Los seis laboratorios incorporan formularios o controles interactivos: selección razonada, simulador de umbral, matriz perceptiva y escenarios de seguridad.
 
-## Banco para Google Forms o Classroom
+## Banco para instrumentos y formularios internos
 
 `BANCO_PREGUNTAS.csv` contiene 60 reactivos adicionales: 10 por unidad, con opciones, clave y retroalimentación. Puede copiar una selección a Google Forms para diagnóstico, evaluación de unidad o recuperación.
 

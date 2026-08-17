@@ -1,6 +1,6 @@
 {
-  "name": "mision-nexus-sistemas-inteligentes",
-  "version": "1.0.0",
+  "name": "mision-nexus-18-institucional-candidata",
+  "version": "18.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -10,10 +10,13 @@
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build": "bash scripts/build-verified.sh",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/static-course.test.mjs tests/rendered-html.test.mjs",
+    "test": "node --test tests/v15-autonomous-evaluation.test.mjs tests/v16-academic-traceability.test.mjs tests/v17-hardening.test.mjs tests/v17-consolidation.test.mjs tests/v18-institutional-readiness.test.mjs tests/v18-github-hf-deployment.test.mjs",
     "validate:artifact": "bash scripts/validate-artifact.sh",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "start:nexus": "python run_nexus18.py",
+    "backup": "python scripts/backup_nexus18.py",
+    "retention:dry": "python scripts/retention_nexus18.py --dry-run"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
@@ -40,5 +43,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "Misi\u00f3n NEXUS: Sistemas Inteligentes"
+  "displayName": "Misión NEXUS 18: Sistemas Inteligentes"
 }

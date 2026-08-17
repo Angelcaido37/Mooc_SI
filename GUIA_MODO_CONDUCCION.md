@@ -14,7 +14,7 @@ No es un libreto obligatorio. Las frases son sugeridas y las comprobaciones ayud
 4. Abra o descargue el cuaderno PDF, instrumento editable, laboratorio y bitácora.
 5. Mantenga disponible el plan B si no habrá conexión o falla un recurso.
 
-La lista se conserva en el navegador y se sincroniza con la cuenta docente cuando las reglas de Firestore están publicadas.
+La lista se conserva en el navegador y se sincroniza con la cuenta docente cuando las reglas de almacenamiento interno NEXUS están publicadas.
 
 ## Durante los 100 minutos
 

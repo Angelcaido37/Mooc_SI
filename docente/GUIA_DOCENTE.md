@@ -1,3 +1,5 @@
+> **NEXUS 16:** documento actualizado para operación autónoma dentro de NEXUS.
+
 # Guía docente de implementación
 
 ## Modelo pedagógico actualizado
@@ -24,10 +26,10 @@ La gamificación estructura y motiva. La evaluación académica se realiza con p
 ## Antes de iniciar el curso
 
 1. Publique el sitio y recorra las seis misiones.
-2. Cree seis temas en Classroom, uno por unidad.
+2. Cree seis temas en NEXUS, uno por unidad.
 3. Cree las seis tareas oficiales con los porcentajes 10, 15, 15, 15, 20 y 25.
 4. Pegue los enlaces de cada tarea en `classroom-links.js`.
-5. Publique en Classroom un material inicial con el enlace al Centro de mando.
+5. Publique en NEXUS un material inicial con el enlace al Centro de mando.
 6. Aplique el diagnóstico sugerido en `BANCO_PREGUNTAS.csv`.
 7. Explique que XP e insignias no equivalen a calificación.
 
@@ -78,4 +80,4 @@ Las microlecciones incluyen transcripción; la interfaz funciona con teclado y p
 
 ## Límites del sitio
 
-El sitio no recopila identidades ni sincroniza calificaciones. El avance se guarda localmente y es formativo. Classroom es el registro institucional de tareas, archivos, rúbricas y retroalimentación.
+El sitio no recopila identidades ni sincroniza calificaciones. El avance se guarda localmente y es formativo. NEXUS es el registro institucional de tareas, archivos, rúbricas y retroalimentación.

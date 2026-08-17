@@ -1,3 +1,5 @@
+> **NEXUS 16:** documento actualizado para operación autónoma dentro de NEXUS.
+
 # Kit docente completo - Misión NEXUS
 
 Este documento acompaña las 26 sesiones presenciales. El sitio público contiene las consignas formativas; este kit conserva la conducción, los criterios de respuesta y la organización docente.
@@ -15,10 +17,10 @@ Este documento acompaña las 26 sesiones presenciales. El sitio público contien
 
 ## Uso recomendado
 
-1. Antes: abra el guion de la sesión, pruebe el juego o laboratorio y publique en Classroom sólo la consigna independiente.
+1. Antes: abra el guion de la sesión y pruebe el juego, laboratorio y evidencia preconfigurada.
 2. Durante: explique, permita dudas, resuelva el ejemplo con el grupo, observe el procedimiento y retroalimente.
 3. Después: indique la ruta independiente y la evidencia; no vuelva a contabilizar lo ya realizado en clase.
-4. Classroom conserva entregas y calificaciones; los XP del sitio son formativos.
+4. NEXUS conserva entregas, rúbricas, retroalimentación y calificaciones; los XP siguen siendo formativos.
 
 # Sesión 1. IA, automatización y problemas pertinentes
 

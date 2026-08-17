@@ -1,19 +1,13 @@
-# Arquitectura de portales de Misión NEXUS
+# Arquitectura de portales NEXUS 18
 
-## Portal del estudiante
+## Estudiante
 
-- El mapa de las 26 sesiones abre una agenda diseñada para el estudiante.
-- Cada sesión presenta propósito, pregunta inicial, láminas, explicación completa, actividad, producto, continuidad independiente y salida de clase.
-- El checklist docente, la planeación minuto a minuto, las respuestas esperadas, las intervenciones y las soluciones internas no se exponen en esta ruta.
-- La opción **Tabla de posiciones** aparece con ese nombre en el menú y desde el Centro de mando.
-- La opción **Tareas en Classroom** muestra las actividades publicadas y lleva al estudiante directamente a Google Classroom para adjuntar y entregar.
+El estudiante recorre sesiones, lecciones, juegos, retos, laboratorios y proyecto. En **Evidencias y rúbricas** entrega texto, enlaces y archivos directamente a NEXUS, consulta la rúbrica y posteriormente visualiza calificación y retroalimentación.
 
-## Portal docente
+## Docente
 
-- El panel inicial reúne planeación, Modo Conducción, 26 guiones, materiales proyectables, seguimiento, medición, analítica y Classroom.
-- La información pedagógica privada permanece concentrada en el portal docente.
-- Al cerrar una sesión, el docente puede publicar su actividad en Classroom con la sesión ya seleccionada.
+El docente dispone de planeación, Modo Conducción, 26 guiones, materiales proyectables, seguimiento, medición y un **Centro de evaluación y analítica**. Las evidencias vienen preconfiguradas y vinculadas a categorías y resultados de aprendizaje. El docente puede ajustar ponderaciones, calificar mediante rúbrica y revisar señales de participación, desempeño y aprendizaje.
 
-## Actualización
+## Ciclo pedagógico
 
-Debe publicarse toda la carpeta `public/course`, junto con `firestore.rules` y las Firebase Functions. El archivo `version.js` y el service worker sustituyen automáticamente las cachés anteriores.
+Pretest → actividades → retos de dominio → evidencias → retroalimentación → mejora/reentrega → postest → analítica → intervención docente.

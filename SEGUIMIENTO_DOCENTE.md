@@ -1,3 +1,5 @@
+> **NEXUS 16:** documento actualizado para operación autónoma dentro de NEXUS.
+
 # Seguimiento docente en NEXUS
 
 ## Cuándo aparece un estudiante
@@ -21,7 +23,7 @@ El panel docente utiliza escucha en tiempo real; no requiere recargar la página
 - `Abierto` significa que el estudiante accedió o descargó el recurso; no demuestra que lo haya realizado.
 - `Realizado` corresponde a un reto superado o un flujo low/no-code validado dentro de la plataforma.
 - El porcentaje de avance se calcula con las 30 lecciones completadas.
-- Las evidencias entregadas directamente en Classroom no se contabilizan hasta habilitar su integración; el panel no simula esa entrega.
+- Las evidencias entregadas en NEXUS se contabilizan directamente en seguimiento y evaluación.
 - La última actividad informa ubicación académica, no tiempo efectivo de estudio ni calidad del desempeño.
 
 ## Prueba recomendada después de publicar
