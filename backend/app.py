@@ -54,11 +54,16 @@ def conn():
     CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,type TEXT,payload TEXT,created_at TEXT);
     CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT);
     CREATE TABLE IF NOT EXISTS acknowledgements(id TEXT PRIMARY KEY,uid TEXT,indicator_id TEXT,session_id TEXT,statement TEXT,response TEXT,observation TEXT,resource_version TEXT,resource_hash TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,created_at TEXT);
+    CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,resource_version TEXT,evidence_hash TEXT,created_at TEXT);
     CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT);
     CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT);
     CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT);
-    '''); return c
+    ''')
+    # Migración compatible con bases NEXUS 18.x ya existentes.
+    cols={r['name'] for r in c.execute('PRAGMA table_info(practice_evidence)').fetchall()}
+    if 'resource_version' not in cols: c.execute('ALTER TABLE practice_evidence ADD COLUMN resource_version TEXT')
+    if 'evidence_hash' not in cols: c.execute('ALTER TABLE practice_evidence ADD COLUMN evidence_hash TEXT')
+    return c
 
 def now(): return datetime.now(timezone.utc).isoformat()
 def audit(c,uid,role,action,target='',payload=None):
@@ -103,8 +108,9 @@ class PracticeEvidence(BaseModel):
     kind:str='system'
     title:str
     payload:dict={}
+    resourceVersion:str='NEXUS18.2'
 
-app=FastAPI(title='NEXUS 18 Institutional Candidate API')
+app=FastAPI(title='NEXUS 19 Institutional API')
 _allowed_origins=[x.strip() for x in os.getenv('NEXUS_ALLOWED_ORIGINS','').split(',') if x.strip()]
 if _allowed_origins:
     app.add_middleware(
@@ -273,9 +279,14 @@ def traceability(authorization:str|None=Header(None)):
 
 @app.post('/api/teacher/practice-evidence')
 def save_practice_evidence(x:PracticeEvidence,authorization:str|None=Header(None)):
-    teacher(authorization); ts=now(); eid=uuid.uuid4().hex
-    with conn() as c:c.execute('INSERT INTO practice_evidence(id,indicator_id,session_id,kind,title,payload,created_at) VALUES(?,?,?,?,?,?,?)',(eid,x.indicatorId,x.sessionId,x.kind,x.title,json.dumps(x.payload),ts))
-    return {'ok':True,'id':eid,'createdAt':ts}
+    u=teacher(authorization); ts=now(); eid=uuid.uuid4().hex
+    version=(x.resourceVersion or 'NEXUS18.2').strip()
+    canonical=json.dumps({'indicatorId':x.indicatorId,'sessionId':x.sessionId,'kind':x.kind,'title':x.title,'payload':x.payload,'resourceVersion':version},sort_keys=True,ensure_ascii=False,separators=(',',':'))
+    evidence_hash=hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+    with conn() as c:
+        c.execute('INSERT INTO practice_evidence(id,indicator_id,session_id,kind,title,payload,resource_version,evidence_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?)',(eid,x.indicatorId,x.sessionId,x.kind,x.title,json.dumps(x.payload,ensure_ascii=False),version,evidence_hash,ts))
+        audit(c,u['uid'],'teacher','practice_evidence_created',eid,{'indicatorId':x.indicatorId,'resourceVersion':version,'evidenceHash':evidence_hash})
+    return {'ok':True,'id':eid,'createdAt':ts,'resourceVersion':version,'evidenceHash':evidence_hash}
 
 @app.get('/api/teacher/records/{kind}')
 def list_teacher_records(kind:str,authorization:str|None=Header(None)):
@@ -374,7 +385,7 @@ def audit_log(authorization:str|None=Header(None)):
 @app.get('/health')
 def health(): return {
     'ok':True,
-    'product':'NEXUS 18',
+    'product':'NEXUS 19',
     'storage':'SQLite',
     'dataDir':str(DATA),
     'environment':NEXUS_ENV,
@@ -382,6 +393,6 @@ def health(): return {
     'retentionDays':RETENTION_DAYS,
     'privacyNoticeVersion':PRIVACY_NOTICE_VERSION,
     'allowedOrigins':_allowed_origins,
-    'deployment':'GitHub Pages + Hugging Face Spaces ready'
+    'deployment':'GitHub Pages + Render'
 }
 app.mount('/',StaticFiles(directory=WEB,html=True),name='course')
