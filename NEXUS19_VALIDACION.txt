@@ -1,0 +1,42 @@
+NEXUS 19 · VALIDACIÓN DEL PAQUETE
+Fecha de consolidación: 2026-08-17
+
+RESULTADO GENERAL
+- Suite automatizada: 48/48 pruebas aprobadas, 0 fallidas.
+- Sintaxis JavaScript validada con node --check:
+  * public/course/teacher-app.js
+  * public/course/teacher-conductor.js
+  * public/course/app.js
+  * public/course/nexus19-pedagogy.js
+  * public/course/nexus19-activities.js
+  * public/course/nexus19-resources.js
+- Backend FastAPI: backend/app.py compila correctamente.
+- Test de integración local FastAPI /health: HTTP 200, product=NEXUS 19, deployment=GitHub Pages + Render.
+
+MÉTRICAS DE APROVISIONAMIENTO EN RUNTIME
+{
+  "sessions": 26,
+  "slides": 338,
+  "activities": 26,
+  "techniques": 26,
+  "readings": 26,
+  "phases": 156,
+  "resourceActions": 316
+}
+
+CONTROLES ESPECÍFICOS NEXUS 19
+- 26 sesiones aprovisionadas.
+- Manual docente separado de Conducir clase.
+- Centro de preparación redundante retirado de la navegación.
+- Recursos contextuales disponibles dentro de las fases de conducción.
+- 13 láminas base por sesión y 338 láminas generadas en total.
+- Un instrumento interactivo asociado a cada sesión.
+- Lectura guiada interna asociada a cada sesión.
+- Técnica didáctica asociada a cada sesión.
+- Portal estudiante no expone las soluciones privadas del docente en los interactivos.
+- Service Worker actualizado a nexus-19-r1.
+- Workflow actualizado a “Publicar NEXUS 19 en GitHub Pages”.
+- Backend identificado como NEXUS 19 y GitHub Pages + Render.
+
+ADVERTENCIA DE DESPLIEGUE
+La persistencia SQLite se conserva por compatibilidad con el piloto. No debe considerarse persistencia institucional definitiva en un Web Service gratuito. Para uso real con calificaciones/evidencias a escala se requiere almacenamiento persistente externo y prueba de respaldo/restauración.
