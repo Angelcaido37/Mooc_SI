@@ -1,10 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 const idx=fs.readFileSync('public/course/index.html','utf8'),platform=fs.readFileSync('public/course/platform-local.js','utf8'),sw=fs.readFileSync('public/course/sw.js','utf8'),teacher=fs.readFileSync('public/course/teacher-app.js','utf8'),trace=fs.readFileSync('public/course/traceability-student.js','utf8'),back=fs.readFileSync('backend/app.py','utf8'),readme=fs.readFileSync('README.md','utf8');
-test('acceso conserva código y clave individual de versión vigente',()=>{assert.match(idx,/value=\"NEXUS1[78]\"/);assert.match(idx,/name=\"accessKey\"/);assert.match(idx,/accessKey\.hidden=t/)});
+test('acceso conserva código y clave individual de versión vigente',()=>{assert.match(idx,/value=\"NEXUS1[78]\"/);assert.match(idx,/name=\"accessKey\"/);assert.match(idx,/studentFields\.hidden=teacher/)});
 test('frontend activo no conserva IDs 15/16',()=>{for(const x of [idx,platform,sw,trace])assert.doesNotMatch(x,/nexus15-token|nexus16-token|NEXUS16|resourceVersion:'NEXUS16'/)});
-test('service worker usa cache vigente y borra anteriores',()=>{assert.match(sw,/nexus-1[78]-/);assert.match(sw,/caches\.delete/)});
+test('service worker usa cache vigente y borra anteriores',()=>{assert.match(sw,/nexus-1[789]-/);assert.match(sw,/caches\.delete/)});
 test('seguimiento no instruye publicar Firestore',()=>assert.doesNotMatch(teacher,/reglas de Firestore|firestore\.rules/));
 test('backend protege producción',()=>{assert.match(back,/NEXUS_ENV/);assert.match(back,/Defina NEXUS_TEACHER_PASSWORD/)});
 test('acuse obtiene hash SHA-256',()=>assert.match(back,/hashlib\.sha256/));
 test('trazabilidad docente crítica persiste en backend',()=>assert.match(back,/teacher\/records/));
-test('README usa runtime vigente',()=>{assert.match(readme,/NEXUS 1[78]/);assert.doesNotMatch(readme,/python run_nexus16\.py/) });
+test('README usa runtime vigente',()=>{assert.match(readme,/NEXUS 1[789]/);assert.doesNotMatch(readme,/python run_nexus16\.py/) });

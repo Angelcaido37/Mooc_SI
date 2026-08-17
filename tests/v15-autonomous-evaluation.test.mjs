@@ -4,7 +4,7 @@ import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');
 test('NEXUS 15 removes Classroom/Firebase from operational portals',()=>{
  const teacher=read('public/course/docente.html'),student=read('public/course/estudiante.html'),login=read('public/course/index.html');
- assert.match(teacher,/evaluation-module\.js/); assert.match(student,/evaluation-module\.js/); assert.match(login,/FastAPI \+ SQLite/);
+ assert.match(teacher,/evaluation-module\.js/); assert.match(student,/evaluation-module\.js/); assert.match(read('public/course/platform-local.js'),/NEXUS_AUTH/);
  assert.doesNotMatch(teacher,/classroom-teacher|firebase-config|platform\.js/); assert.doesNotMatch(student,/classroom-links|firebase-config|student-cloud/);
 });
 test('evaluation categories sum to 100 and evidences are preconfigured',()=>{
