@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#071329">
   <title>Portal docente · NEXUS 19</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="teacher-final.css?v=19-final-r2">
   <link rel="stylesheet" href="portal.css">
   <link rel="stylesheet" href="pilot.css?v=18">
   <link rel="stylesheet" href="conductor.css?v=18">
@@ -19,8 +19,8 @@
   </div>
   <div id="teacherShell" hidden>
     <a class="skip-link" href="#main">Saltar al contenido</a>
-    <header class="topbar"><a class="brand" href="docente.html"><span class="brand-mark">N</span><span><strong>NEXUS 19</strong><small>Portal docente</small></span></a><div class="top-actions"><span class="release-chip">Conducción universitaria</span><span id="teacherIdentity" class="status-chip"></span><button id="signOut" class="btn btn-outline">Cerrar sesión</button></div></header>
-    <aside class="sidebar">
+    <header class="topbar"><button id="teacherMenuBtn" class="icon-btn teacher-mobile-menu" type="button" aria-label="Abrir menú" aria-controls="teacherSidebar" aria-expanded="false">☰</button><a class="brand" href="docente.html"><span class="brand-mark">N</span><span><strong>NEXUS 19</strong><small>Portal docente</small></span></a><div class="top-actions"><button id="teacherModeBtn" class="btn btn-outline" type="button">Modo guiado</button><span class="release-chip">NEXUS 19 · FINAL R2</span><span id="teacherIdentity" class="status-chip"></span><button id="signOut" class="btn btn-outline">Cerrar sesión</button></div></header>
+    <div id="teacherSidebarBackdrop" class="sidebar-backdrop" hidden aria-hidden="true"></div><aside id="teacherSidebar" class="sidebar"><button id="teacherSidebarClose" class="sidebar-close teacher-mobile-menu" type="button">Cerrar menú <span>×</span></button>
       <nav>
         <p class="nav-section-label">Visión general</p>
         <button class="nav-item active" data-teacher-nav="dashboard"><span>⌂</span>Panel docente</button>
@@ -34,7 +34,7 @@
         <button class="nav-item" data-teacher-nav="evaluation"><span>✓</span>Evaluar y retroalimentar</button>
         <button class="nav-item" data-teacher-nav="students"><span>◎</span>Seguimiento</button>
         <button class="nav-item" data-teacher-nav="analytics"><span>◫</span>Analizar aprendizaje</button>
-        <button class="nav-item" data-teacher-nav="traceability"><span>⌁</span>Trazabilidad docente</button>
+        <button class="nav-item" data-teacher-nav="traceability"><span>⌁</span>Trazabilidad docente</button><button class="nav-item" data-teacher-nav="communication"><span>✉</span>Comunicación</button>
         <a class="nav-item" href="institutional.html"><span>⚙</span>Gobernanza institucional</a>
         <a class="nav-item" href="estudiante.html"><span>◉</span>Vista estudiante</a>
       </nav>
@@ -44,7 +44,7 @@
   </div>
   <div id="teacherToast" class="toast"></div>
   <script src="version.js?v=19-stable-20260817"></script>
-  <script src="runtime-config.js?v=19"></script><script src="platform-local.js?v=19-stable-20260817"></script>
+  <script src="runtime-config.js?v=19"></script><script src="platform-local.js?v=19-final-r2"></script>
   <script src="course-data.js"></script>
   <script src="teaching-data.js"></script>
   <script src="teacher-detail-data.js"></script>
@@ -62,7 +62,7 @@
   <script src="evaluation-module.js?v=19-stable-20260817"></script>
   <script src="academic-depth-teacher.js?v=18"></script>
   <script src="traceability-teacher.js?v=19-stable-20260817"></script>
-  <script src="teacher-app.js?v=19.1-sessionfix"></script>
+  <script src="communication.js?v=19-final-r2"></script><script src="teacher-final.js?v=19-final-r2"></script><script src="teacher-app.js?v=19-final-r2"></script>
   <script src="measurement-teacher.js?v=19.1-sessionfix"></script>
 <script src="accessibility.js?v=18"></script></body>
 </html>
