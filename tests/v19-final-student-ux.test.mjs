@@ -6,11 +6,11 @@ const app=fs.readFileSync('public/course/app.js','utf8');
 const evalmod=fs.readFileSync('public/course/evaluation-module.js','utf8');
 const css=fs.readFileSync('public/course/nexus19.css','utf8');
 
-test('menú primario del estudiante se reduce a siete decisiones claras',()=>{
+test('menú primario del estudiante mantiene ocho decisiones claras incluyendo Mensajes',()=>{
  const sidebar=html.match(/<aside id="sidebar"[\s\S]*?<\/aside>/)?.[0]||'';
  const buttons=[...sidebar.matchAll(/class="nav-item/g)];
- assert.equal(buttons.length,7);
- for(const label of ['Inicio / Continuar','Mi ruta','Actividades y juegos','Proyecto integrador','Evidencias y calificaciones','Recursos y apoyo','Mi perfil']) assert.match(sidebar,new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+ assert.equal(buttons.length,8);
+ for(const label of ['Inicio / Continuar','Mi ruta','Actividades y juegos','Proyecto integrador','Evidencias y calificaciones','Mensajes','Recursos y apoyo','Mi perfil']) assert.match(sidebar,new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
  for(const old of ['26 sesiones de clase','Centro de aprendizaje','Laboratorio low/no-code','Python y FastAPI','Tienda de avatares','Tabla de posiciones']) assert.doesNotMatch(sidebar,new RegExp(old));
 });
 test('profundidad académica queda integrada en la lección',()=>{

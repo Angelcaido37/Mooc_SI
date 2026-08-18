@@ -79,7 +79,7 @@ SQLITE_SCHEMA='''
 CREATE TABLE IF NOT EXISTS users(uid TEXT PRIMARY KEY,name TEXT,email TEXT,role TEXT,created_at TEXT,last_at TEXT);
 CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,uid TEXT,created_at TEXT);
 CREATE TABLE IF NOT EXISTS progress(uid TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
-CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BLOB,file_mime TEXT,file_size INTEGER,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade REAL,feedback TEXT,rubric_scores TEXT,graded_at TEXT);
+CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BLOB,file_mime TEXT,file_size INTEGER,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade REAL,feedback TEXT,rubric_scores TEXT,graded_at TEXT,attempt_count INTEGER DEFAULT 1,resubmission_allowed INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS config(key TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
 CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,type TEXT,payload TEXT,created_at TEXT);
 CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT);
@@ -88,12 +88,14 @@ CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TE
 CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT);
 CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT);
 CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY,sender_uid TEXT,subject TEXT,body TEXT,context_type TEXT,context_id TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS message_recipients(message_id TEXT,recipient_uid TEXT,read_at TEXT,PRIMARY KEY(message_id,recipient_uid));
 '''
 POSTGRES_SCHEMA=[
 '''CREATE TABLE IF NOT EXISTS users(uid TEXT PRIMARY KEY,name TEXT,email TEXT,role TEXT,created_at TEXT,last_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,uid TEXT,created_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS progress(uid TEXT PRIMARY KEY,data TEXT,updated_at TEXT)''',
-'''CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BYTEA,file_mime TEXT,file_size BIGINT,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade DOUBLE PRECISION,feedback TEXT,rubric_scores TEXT,graded_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BYTEA,file_mime TEXT,file_size BIGINT,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade DOUBLE PRECISION,feedback TEXT,rubric_scores TEXT,graded_at TEXT,attempt_count INTEGER DEFAULT 1,resubmission_allowed INTEGER DEFAULT 0)''',
 '''CREATE TABLE IF NOT EXISTS config(key TEXT PRIMARY KEY,data TEXT,updated_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS events(id BIGSERIAL PRIMARY KEY,uid TEXT,type TEXT,payload TEXT,created_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT)''',
@@ -101,7 +103,9 @@ POSTGRES_SCHEMA=[
 '''CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,resource_version TEXT,evidence_hash TEXT,created_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT)''',
 '''CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT)''',
-'''CREATE TABLE IF NOT EXISTS audit_log(id BIGSERIAL PRIMARY KEY,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT)'''
+'''CREATE TABLE IF NOT EXISTS audit_log(id BIGSERIAL PRIMARY KEY,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY,sender_uid TEXT,subject TEXT,body TEXT,context_type TEXT,context_id TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS message_recipients(message_id TEXT,recipient_uid TEXT,read_at TEXT,PRIMARY KEY(message_id,recipient_uid))'''
 ]
 
 def init_storage():
@@ -113,6 +117,8 @@ def init_storage():
                 'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_mime TEXT',
                 'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_size BIGINT',
                 'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_sha256 TEXT',
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS attempt_count INTEGER DEFAULT 1',
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS resubmission_allowed INTEGER DEFAULT 0',
                 'ALTER TABLE practice_evidence ADD COLUMN IF NOT EXISTS resource_version TEXT',
                 'ALTER TABLE practice_evidence ADD COLUMN IF NOT EXISTS evidence_hash TEXT'
             ]: c.execute(stmt)
@@ -120,7 +126,7 @@ def init_storage():
             c.executescript(SQLITE_SCHEMA)
             for table, additions in {
                 'practice_evidence':[('resource_version','TEXT'),('evidence_hash','TEXT')],
-                'evidence':[('file_blob','BLOB'),('file_mime','TEXT'),('file_size','INTEGER'),('file_sha256','TEXT')]
+                'evidence':[('file_blob','BLOB'),('file_mime','TEXT'),('file_size','INTEGER'),('file_sha256','TEXT'),('attempt_count','INTEGER DEFAULT 1'),('resubmission_allowed','INTEGER DEFAULT 0')]
             }.items():
                 cols={r['name'] for r in c.execute(f'PRAGMA table_info({table})').fetchall()}
                 for name,typ in additions:
@@ -169,6 +175,12 @@ def teacher(authorization):
 class Login(BaseModel): role:str; name:str=''; email:str=''; password:str=''; courseCode:str=''; accessKey:str=''; privacyAccepted:bool=False
 class Obj(BaseModel): data:dict
 class Grade(BaseModel): grade:float; feedback:str=''; rubricScores:dict=Field(default_factory=dict); status:str='graded'
+class MessageCreate(BaseModel):
+    recipientUid:str=''
+    subject:str
+    body:str
+    contextType:str='general'
+    contextId:str=''
 
 class Ack(BaseModel):
     indicatorId:str
@@ -266,7 +278,7 @@ def public_leaderboard(authorization:str|None=Header(None)):
 @app.get('/api/evidence/mine')
 def mine(authorization:str|None=Header(None)):
     u=authz(authorization)
-    fields='id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_mime,file_size,file_sha256,status,submitted_at,grade,feedback,rubric_scores,graded_at'
+    fields='id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_mime,file_size,file_sha256,status,submitted_at,grade,feedback,rubric_scores,graded_at,attempt_count,resubmission_allowed'
     with conn() as c: rows=c.execute(f'SELECT {fields} FROM evidence WHERE uid=? ORDER BY submitted_at DESC',(u['uid'],)).fetchall()
     return [dict(r) | {'rubric_scores':json.loads(r['rubric_scores'] or '{}')} for r in rows]
 
@@ -295,23 +307,28 @@ def submit_evidence(evidenceId:str=Form(...),title:str=Form(''),textAnswer:str=F
         blob=buf.getvalue(); mime=(file.content_type or 'application/octet-stream')[:120]; digest=hashlib.sha256(blob).hexdigest()
     ts=now()
     with conn() as c:
-        c.execute('''INSERT INTO evidence(id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_blob,file_mime,file_size,file_sha256,status,submitted_at,rubric_scores)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+        existing=c.execute('SELECT status,grade,attempt_count,resubmission_allowed FROM evidence WHERE id=?',(eid,)).fetchone()
+        if existing and existing['grade'] is not None and not int(existing['resubmission_allowed'] or 0):
+            raise HTTPException(409,'La evidencia ya fue calificada. El docente debe habilitar una reentrega antes de enviar una nueva versión.')
+        c.execute('''INSERT INTO evidence(id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_blob,file_mime,file_size,file_sha256,status,submitted_at,rubric_scores,attempt_count,resubmission_allowed)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
         title=excluded.title,text_answer=excluded.text_answer,link_url=excluded.link_url,
         file_name=CASE WHEN excluded.file_name<>'' THEN excluded.file_name ELSE evidence.file_name END,
         file_blob=CASE WHEN excluded.file_name<>'' THEN excluded.file_blob ELSE evidence.file_blob END,
         file_mime=CASE WHEN excluded.file_name<>'' THEN excluded.file_mime ELSE evidence.file_mime END,
         file_size=CASE WHEN excluded.file_name<>'' THEN excluded.file_size ELSE evidence.file_size END,
         file_sha256=CASE WHEN excluded.file_name<>'' THEN excluded.file_sha256 ELSE evidence.file_sha256 END,
-        status='submitted',submitted_at=excluded.submitted_at''',
-        (eid,u['uid'],evidenceId,title,textAnswer,linkUrl,fn,'',blob,mime,size,digest,'submitted',ts,'{}'))
-        audit(c,u['uid'],'student','evidence_submitted',eid,{'evidenceId':evidenceId,'fileName':fn,'fileSha256':digest,'fileSize':size})
-    return {'ok':True,'id':eid,'submittedAt':ts,'fileSha256':digest or None}
+        status='submitted',submitted_at=excluded.submitted_at,grade=NULL,feedback='',rubric_scores='{}',graded_at=NULL,
+        attempt_count=COALESCE(evidence.attempt_count,1)+1,resubmission_allowed=0''',
+        (eid,u['uid'],evidenceId,title,textAnswer,linkUrl,fn,'',blob,mime,size,digest,'submitted',ts,'{}',1,0))
+        row=c.execute('SELECT attempt_count FROM evidence WHERE id=?',(eid,)).fetchone()
+        audit(c,u['uid'],'student','evidence_submitted',eid,{'evidenceId':evidenceId,'fileName':fn,'fileSha256':digest,'fileSize':size,'attempt':row['attempt_count'] if row else 1})
+    return {'ok':True,'id':eid,'submittedAt':ts,'fileSha256':digest or None,'attempt':row['attempt_count'] if row else 1}
 
 @app.get('/api/teacher/evidence')
 def all_evidence(authorization:str|None=Header(None)):
     teacher(authorization)
-    fields='e.id,e.uid,e.evidence_id,e.title,e.text_answer,e.link_url,e.file_name,e.file_path,e.file_mime,e.file_size,e.file_sha256,e.status,e.submitted_at,e.grade,e.feedback,e.rubric_scores,e.graded_at,u.name student_name,u.email student_email'
+    fields='e.id,e.uid,e.evidence_id,e.title,e.text_answer,e.link_url,e.file_name,e.file_path,e.file_mime,e.file_size,e.file_sha256,e.status,e.submitted_at,e.grade,e.feedback,e.rubric_scores,e.graded_at,e.attempt_count,e.resubmission_allowed,u.name student_name,u.email student_email'
     with conn() as c: rows=c.execute(f'SELECT {fields} FROM evidence e JOIN users u ON u.uid=e.uid ORDER BY e.submitted_at DESC').fetchall()
     return [dict(r)|{'rubric_scores':json.loads(r['rubric_scores'] or '{}')} for r in rows]
 
@@ -324,6 +341,16 @@ def grade(eid:str,x:Grade,authorization:str|None=Header(None)):
         if not exists: raise HTTPException(404,'Evidencia no encontrada')
         c.execute('UPDATE evidence SET grade=?,feedback=?,rubric_scores=?,status=?,graded_at=? WHERE id=?',(x.grade,x.feedback,json.dumps(x.rubricScores),x.status,now(),eid)); audit(c,u['uid'],'teacher','grade_evidence',eid,{'grade':x.grade,'status':x.status})
     return {'ok':True}
+
+@app.post('/api/teacher/evidence/{eid}/resubmission')
+def evidence_resubmission(eid:str,x:Obj,authorization:str|None=Header(None)):
+    u=teacher(authorization); allowed=1 if bool((x.data or {}).get('allowed')) else 0
+    with conn() as c:
+        row=c.execute('SELECT id,uid,evidence_id FROM evidence WHERE id=?',(eid,)).fetchone()
+        if not row: raise HTTPException(404,'Evidencia no encontrada')
+        c.execute('UPDATE evidence SET resubmission_allowed=? WHERE id=?',(allowed,eid))
+        audit(c,u['uid'],'teacher','resubmission_permission',eid,{'allowed':bool(allowed),'studentUid':row['uid'],'evidenceId':row['evidence_id']})
+    return {'ok':True,'allowed':bool(allowed)}
 
 @app.get('/api/evidence/file/{eid}')
 def evidence_file(eid:str,token:str='',authorization:str|None=Header(None)):
@@ -345,8 +372,10 @@ def get_config(key:str,authorization:str|None=Header(None)):
     return json.loads(r['data']) if r else {}
 @app.post('/api/config/{key}')
 def set_config(key:str,x:Obj,authorization:str|None=Header(None)):
-    teacher(authorization)
-    with conn() as c:c.execute('INSERT INTO config(key,data,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET data=excluded.data,updated_at=excluded.updated_at',(key,json.dumps(x.data),now()))
+    u=teacher(authorization)
+    with conn() as c:
+        c.execute('INSERT INTO config(key,data,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET data=excluded.data,updated_at=excluded.updated_at',(key,json.dumps(x.data),now()))
+        audit(c,u['uid'],'teacher','config_updated',key,{'keys':sorted((x.data or {}).keys())})
     return x.data
 
 @app.get('/api/gradebook/mine')
@@ -422,16 +451,80 @@ def get_teacher_record(kind:str,record_id:str,authorization:str|None=Header(None
 
 @app.post('/api/teacher/records/{kind}/{record_id}')
 def put_teacher_record(kind:str,record_id:str,x:Obj,authorization:str|None=Header(None)):
-    teacher(authorization); ts=now()
-    with conn() as c:c.execute('INSERT INTO teacher_records(id,kind,data,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET kind=excluded.kind,data=excluded.data,created_at=excluded.created_at',(record_id,kind,json.dumps(x.data),ts))
+    u=teacher(authorization); ts=now()
+    with conn() as c:
+        c.execute('INSERT INTO teacher_records(id,kind,data,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET kind=excluded.kind,data=excluded.data,created_at=excluded.created_at',(record_id,kind,json.dumps(x.data),ts))
+        audit(c,u['uid'],'teacher','teacher_record_saved',f'{kind}:{record_id}',{'kind':kind})
     return {'id':record_id,'kind':kind,'data':x.data,'created_at':ts}
 
 @app.post('/api/teacher/records/{kind}')
 def add_teacher_record(kind:str,x:Obj,authorization:str|None=Header(None)):
-    teacher(authorization); ts=now(); rid=uuid.uuid4().hex
-    with conn() as c:c.execute('INSERT INTO teacher_records(id,kind,data,created_at) VALUES(?,?,?,?)',(rid,kind,json.dumps(x.data),ts))
+    u=teacher(authorization); ts=now(); rid=uuid.uuid4().hex
+    with conn() as c:
+        c.execute('INSERT INTO teacher_records(id,kind,data,created_at) VALUES(?,?,?,?)',(rid,kind,json.dumps(x.data),ts))
+        audit(c,u['uid'],'teacher','teacher_record_created',f'{kind}:{rid}',{'kind':kind})
     return {'id':rid,'kind':kind,'data':x.data,'created_at':ts}
 
+
+
+@app.post('/api/messages')
+def send_message(x:MessageCreate,authorization:str|None=Header(None)):
+    u=authz(authorization)
+    subject=(x.subject or '').strip()[:160]
+    body=(x.body or '').strip()[:5000]
+    if not subject or not body: raise HTTPException(400,'Asunto y mensaje son obligatorios')
+    mid=uuid.uuid4().hex; ts=now()
+    with conn() as c:
+        if u['role']=='teacher':
+            if x.recipientUid:
+                row=c.execute("SELECT uid FROM users WHERE uid=? AND role='student'",(x.recipientUid,)).fetchone()
+                if not row: raise HTTPException(404,'Estudiante no encontrado')
+                recipients=[x.recipientUid]
+            else:
+                recipients=[r['uid'] for r in c.execute("SELECT uid FROM users WHERE role='student'").fetchall()]
+        else:
+            recipients=[r['uid'] for r in c.execute("SELECT uid FROM users WHERE role='teacher' ORDER BY last_at DESC").fetchall()]
+        if not recipients: raise HTTPException(400,'No hay destinatarios registrados para recibir el mensaje')
+        c.execute('INSERT INTO messages(id,sender_uid,subject,body,context_type,context_id,created_at) VALUES(?,?,?,?,?,?,?)',(mid,u['uid'],subject,body,(x.contextType or 'general')[:40],(x.contextId or '')[:120],ts))
+        for uid in recipients:
+            c.execute('INSERT INTO message_recipients(message_id,recipient_uid,read_at) VALUES(?,?,?)',(mid,uid,None))
+        audit(c,u['uid'],u['role'],'message_sent',mid,{'recipientCount':len(recipients),'recipientUid':x.recipientUid or ('group' if u['role']=='teacher' else 'teacher'),'contextType':x.contextType,'contextId':x.contextId})
+    return {'ok':True,'id':mid,'recipientCount':len(recipients),'createdAt':ts}
+
+@app.get('/api/messages/mine')
+def my_messages(authorization:str|None=Header(None)):
+    u=authz(authorization)
+    with conn() as c:
+        sent=c.execute('''SELECT m.id,m.subject,m.body,m.context_type,m.context_id,m.created_at,
+        NULL read_at,'sent' direction,u2.name sender_name,u2.email sender_email,
+        COUNT(mr.recipient_uid) recipient_count,SUM(CASE WHEN mr.read_at IS NOT NULL THEN 1 ELSE 0 END) read_count
+        FROM messages m JOIN users u2 ON u2.uid=m.sender_uid LEFT JOIN message_recipients mr ON mr.message_id=m.id
+        WHERE m.sender_uid=? GROUP BY m.id,u2.name,u2.email ORDER BY m.created_at DESC''',(u['uid'],)).fetchall()
+        received=c.execute('''SELECT m.id,m.subject,m.body,m.context_type,m.context_id,m.created_at,
+        mr.read_at,'received' direction,u2.name sender_name,u2.email sender_email,
+        1 recipient_count,CASE WHEN mr.read_at IS NOT NULL THEN 1 ELSE 0 END read_count
+        FROM messages m JOIN message_recipients mr ON mr.message_id=m.id JOIN users u2 ON u2.uid=m.sender_uid
+        WHERE mr.recipient_uid=? ORDER BY m.created_at DESC''',(u['uid'],)).fetchall()
+    rows=[dict(r) for r in sent]+[dict(r) for r in received]
+    rows.sort(key=lambda r:r.get('created_at') or '',reverse=True)
+    return rows
+
+@app.post('/api/messages/{mid}/read')
+def mark_message_read(mid:str,authorization:str|None=Header(None)):
+    u=authz(authorization)
+    with conn() as c:
+        row=c.execute('SELECT message_id FROM message_recipients WHERE message_id=? AND recipient_uid=?',(mid,u['uid'])).fetchone()
+        if not row: raise HTTPException(404,'Mensaje no encontrado')
+        c.execute('UPDATE message_recipients SET read_at=? WHERE message_id=? AND recipient_uid=?',(now(),mid,u['uid']))
+        audit(c,u['uid'],'student','message_read',mid,{})
+    return {'ok':True}
+
+@app.get('/api/messages/unread-count')
+def unread_message_count(authorization:str|None=Header(None)):
+    u=authz(authorization)
+    with conn() as c:
+        n=c.execute('SELECT COUNT(*) n FROM message_recipients WHERE recipient_uid=? AND read_at IS NULL',(u['uid'],)).fetchone()['n']
+    return {'count':n}
 
 class DataRequest(BaseModel):
     kind:str
@@ -517,7 +610,7 @@ def health():
     return {
         'ok':db_ok,
         'product':'NEXUS 19',
-        'release':'stable',
+        'release':'19-final-r2',
         'storage':'PostgreSQL' if USE_POSTGRES else 'SQLite',
         'persistent':USE_POSTGRES,
         'fileStorage':'database',

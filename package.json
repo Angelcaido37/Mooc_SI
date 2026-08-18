@@ -1,6 +1,6 @@
 {
   "name": "mision-nexus-19",
-  "version": "19.3.0",
+  "version": "19.3.1",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -10,7 +10,7 @@
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build": "bash scripts/build-verified.sh",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "node --test tests/v15-autonomous-evaluation.test.mjs tests/v16-academic-traceability.test.mjs tests/v17-hardening.test.mjs tests/v17-consolidation.test.mjs tests/v18-institutional-readiness.test.mjs tests/v18-github-hf-deployment.test.mjs tests/v181-login-ui.test.mjs tests/v182-visual-traceability.test.mjs tests/v18-3-student-portal.test.mjs tests/v19-pedagogical-architecture.test.mjs tests/v19-runtime-data.test.mjs tests/v19-1-session-recovery.test.mjs tests/v19-stable-runtime.test.mjs tests/v19-final-student-ux.test.mjs",
+    "test": "node --test tests/v15-autonomous-evaluation.test.mjs tests/v16-academic-traceability.test.mjs tests/v17-hardening.test.mjs tests/v17-consolidation.test.mjs tests/v18-institutional-readiness.test.mjs tests/v18-github-hf-deployment.test.mjs tests/v181-login-ui.test.mjs tests/v182-visual-traceability.test.mjs tests/v18-3-student-portal.test.mjs tests/v19-pedagogical-architecture.test.mjs tests/v19-runtime-data.test.mjs tests/v19-1-session-recovery.test.mjs tests/v19-stable-runtime.test.mjs tests/v19-final-student-ux.test.mjs tests/v19-final-teacher-consolidation.test.mjs tests/v19-final-r2-deploy.test.mjs",
     "validate:artifact": "bash scripts/validate-artifact.sh",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
@@ -43,5 +43,5 @@
     "wrangler": "4.92.0"
   },
   "type": "module",
-  "displayName": "Misión NEXUS 19 · Estable Final"
+  "displayName": "NEXUS 19 · Estable Final Integral"
 }
