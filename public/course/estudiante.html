@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071329">
   <meta name="description" content="Curso gamificado de Sistemas Inteligentes, 96 horas, Universidad Autónoma de Nayarit.">
-  <title>Portal estudiante · NEXUS 19</title>
+  <title>Portal estudiante · NEXUS 19 · Estable</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="v4.css?v=18">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="measurement.css?v=prod1">
   <link rel="stylesheet" href="evaluation.css?v=18">
   <link rel="stylesheet" href="traceability.css?v=18">
-<link rel="stylesheet" href="accessibility.css?v=18"><link rel="stylesheet" href="nexus19.css?v=19"></head>
+<link rel="stylesheet" href="accessibility.css?v=18"><link rel="stylesheet" href="nexus19.css?v=19-final-ux"></head>
 <body class="student-locked">
   <a class="skip-link" href="#main">Saltar al contenido</a>
   <section id="studentGate" class="secure-gate" role="status" aria-live="polite">
@@ -23,7 +23,7 @@
   </section>
   <div id="app" hidden>
     <header class="topbar">
-      <button id="menuBtn" class="icon-btn mobile-only" aria-label="Abrir menú">☰</button>
+      <button id="menuBtn" class="icon-btn mobile-only" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false">☰</button>
       <button class="brand" data-nav="home" aria-label="Ir al inicio">
         <span class="brand-mark" aria-hidden="true">N</span>
         <span><strong>NEXUS 19</strong><small>Portal estudiante</small></span>
@@ -36,33 +36,23 @@
       </div>
     </header>
 
+    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden aria-hidden="true"></div>
     <aside id="sidebar" class="sidebar" aria-label="Navegación principal">
+      <button id="sidebarClose" class="sidebar-close mobile-only" type="button" aria-label="Cerrar menú">Cerrar menú <span aria-hidden="true">×</span></button>
       <nav>
-        <button class="nav-item active" data-nav="home"><span>⌂</span>Centro de mando</button>
-        <button class="nav-item" data-nav="sessions"><span>▦</span>26 sesiones de clase</button>
-        <button class="nav-item" data-nav="route"><span>◎</span>Ruta de aprendizaje</button>
-        <button class="nav-item" data-measurement-nav><span>◫</span>Mi participación y encuestas</button>
-        <button class="nav-item" data-nav="story"><span>⬡</span>Historia NEXUS</button>
+        <button class="nav-item active" data-nav="home"><span>⌂</span>Inicio / Continuar</button>
+        <button class="nav-item" data-nav="route"><span>◎</span>Mi ruta</button>
+        <button class="nav-item" data-nav="games"><span>✦</span>Actividades y juegos</button>
         <button class="nav-item" data-nav="project"><span>◇</span>Proyecto integrador</button>
-        <button class="nav-item" data-nav="games"><span>✦</span>Juegos y retos</button>
-        <button class="nav-item" data-nav="bonus"><span>🪙</span>Retos con bonificación</button>
-        <button class="nav-item" data-nav="shop"><span>🛍</span>Tienda de avatares</button>
-        <button class="nav-item" data-nav="leaderboard"><span>🏆</span>Tabla de posiciones</button>
-        <button class="nav-item" data-nav="lowcode"><span>⌘</span>Laboratorio low/no-code</button>
-        <button class="nav-item" data-nav="technical"><span>{ }</span>Python y FastAPI</button>
-        <button class="nav-item" data-nav="learn"><span>◈</span>Centro de aprendizaje</button>
-        <button class="nav-item" data-nav="evidence"><span>✓</span>Evidencias y rúbricas</button>
-        <button class="nav-item" data-nav="trace"><span>✍</span>Constancias académicas</button>
-        <button class="nav-item" data-nav="glossary"><span>A</span>Glosario</button>
-        <button class="nav-item" data-nav="help"><span>?</span>Cómo estudiar aquí</button>
-        <a class="nav-item" href="privacy-center.html"><span>⚿</span>Privacidad y mis datos</a>
-        <button class="nav-item" data-nav="how"><span>i</span>Cómo jugar NEXUS</button>
+        <button class="nav-item" data-nav="evidence"><span>✓</span>Evidencias y calificaciones</button>
+        <button class="nav-item" data-nav="resources"><span>☷</span>Recursos y apoyo</button>
+        <button id="studentProfileNav" class="nav-item" type="button"><span>●</span>Mi perfil</button>
       </nav>
       <div class="sidebar-progress">
         <div class="ring" id="sideRing"><span id="sidePercent">0%</span></div>
         <div><strong>Tu expedición</strong><small id="sideSummary">0 de 30 lecciones</small></div>
       </div>
-      <p class="privacy-note">Tu avance, evidencias, retroalimentación y calificaciones forman parte del expediente NEXUS.</p>
+      <p class="privacy-note">Tu avance, evidencias, retroalimentación y calificaciones forman parte del expediente NEXUS. <a href="privacy-center.html">Privacidad y mis datos</a>.</p>
     </aside>
 
     <main id="main" class="main" tabindex="-1">
@@ -84,8 +74,8 @@
   <dialog id="pilotOnboarding" class="pilot-dialog"><div id="pilotOnboardingContent"></div></dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="version.js?v=19"></script>
-  <script src="runtime-config.js?v=19"></script><script src="platform-local.js?v=19"></script>
+  <script src="version.js?v=19-stable-20260817"></script>
+  <script src="runtime-config.js?v=19"></script><script src="platform-local.js?v=19-stable-20260817"></script>
   <script src="course-data.js"></script>
   <script src="teaching-data.js"></script>
   <script src="game-data.js"></script>
@@ -101,11 +91,11 @@
   <script src="nexus19-activities.js?v=19"></script>
   <script src="traceability-data.js?v=18"></script>
   <script src="pedagogy-data.js?v=18"></script>
-  <script src="evaluation-module.js?v=18"></script>
+  <script src="evaluation-module.js?v=19-final-ux"></script>
   <script src="arcade.js"></script>
   <script src="pilot.js?v=18"></script>
   <script src="academic-depth-student.js?v=18"></script>
-  <script src="traceability-student.js?v=18"></script>
-  <script src="app.js?v=19"></script><script src="student-local.js?v=19"></script><script src="measurement-student.js?v=prod1"></script>
+  <script src="traceability-student.js?v=19-stable-20260817"></script>
+  <script src="app.js?v=19-final-ux"></script><script src="student-local.js?v=19-stable-20260817"></script><script src="measurement-student.js?v=prod1"></script>
 <script src="accessibility.js?v=18"></script></body>
 </html>
