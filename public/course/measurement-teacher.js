@@ -163,7 +163,8 @@
     let optionalWarning=false;
     const coreFail=error=>{
       const detail=String(error?.code||error?.message||error||"");
-      notify(/permission-denied|insufficient permissions/i.test(detail)?"No fue posible guardar la medición en el backend de NEXUS. Verifique que el servidor esté activo y que su sesión siga vigente.":`Medición no disponible: ${error.message||error}`);
+      if(/sesión (inválida|expirada|requerida)|sesion (invalida|expirada|requerida)/i.test(detail)) return;
+      notify(/permission-denied|insufficient permissions/i.test(detail)?"No fue posible acceder al backend de NEXUS. Verifique su conexión e inténtelo de nuevo.":`Medición no disponible: ${error.message||error}`);
     };
     const optionalFail=()=>{
       if(optionalWarning)return;
