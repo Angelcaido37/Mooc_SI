@@ -158,7 +158,7 @@
   function begin(){
     if(current.status==="not-started"){
       current.status="active";current.startedAt=current.startedAt||nowIso();
-      NEXUS_AUTH.recordTeacherConductorEvent?.("start",current.sessionId).catch(()=>{});
+      NEXUS_AUTH.recordTeacherConductorEvent?.({event:"start",sessionId:current.sessionId,phaseIndex:current.phaseIndex}).catch(()=>{});
     }
     current.running=true;current.anchorTime=Date.now();current.anchorRemaining=current.remainingSeconds;
     persist({immediate:true});startTicker();hooks.rerender();
@@ -185,7 +185,7 @@
     current.phaseIndex=Math.max(0,Math.min(currentSession.teacherScript.length-1,target));
     current.status="active";current.remainingSeconds=phaseMinutes(currentSession,current,current.phaseIndex)*60;
     current.running=false;current.anchorTime=null;current.anchorRemaining=null;
-    persist({immediate:true});NEXUS_AUTH.recordTeacherConductorEvent?.("phase",current.sessionId).catch(()=>{});hooks.rerender();
+    persist({immediate:true});NEXUS_AUTH.recordTeacherConductorEvent?.({event:"phase",sessionId:current.sessionId,phaseIndex:current.phaseIndex}).catch(()=>{});hooks.rerender();
   }
 
   function nextPhase(){
@@ -202,7 +202,7 @@
     const summary=current.summary,note=[summary.achievement&&`Logro: ${summary.achievement}`,summary.difficulty&&`Dificultad: ${summary.difficulty}`,summary.nextAdjustment&&`Próximo ajuste: ${summary.nextAdjustment}`].filter(Boolean).join(" | ");
     try{
       await Promise.all([
-        NEXUS_AUTH.recordTeacherConductorEvent?.("complete",current.sessionId),
+        NEXUS_AUTH.recordTeacherConductorEvent?.({event:"complete",sessionId:current.sessionId,phaseIndex:current.phaseIndex,activeSeconds:current.activeSeconds}),
         NEXUS_AUTH.saveTeacherReflection?.({session:current.sessionId,savedMinutes:Number(summary.savedMinutes)||0,usefulness:Number(summary.usefulness)||0,clarity:Number(summary.clarity)||0,actionability:Number(summary.actionability)||0,actionTaken:summary.actionTaken||"no",note,source:"conductor-v13"})
       ]);
       hooks.toast("Sesión y reflexión docente registradas");
@@ -213,7 +213,7 @@
   function downloadLog(){
     const s=currentSession,state=current,summary=state.summary;
     const lines=[`Misión NEXUS · Bitácora docente`, `Sesión ${s.number}: ${s.title}`,`Estado: ${state.status}`,`Inicio: ${state.startedAt||"No registrado"}`,`Cierre: ${state.finishedAt||"No registrado"}`,`Tiempo activo aproximado: ${Math.round((Number(state.activeSeconds)||0)/60)} min`,`Momentos completados: ${state.completedPhases.length}/6`,`Plan B utilizado: ${summary.planBUsed?"Sí":"No"}`,`Nivel de logro: ${summary.goalLevel}/5`,`Incidencias: ${summary.incidentCount||0}`,"",`Logro del grupo: ${summary.achievement||"Sin nota"}`,`Dificultad principal: ${summary.difficulty||"Sin nota"}`,`Próximo ajuste: ${summary.nextAdjustment||"Sin nota"}`,"","Notas por momento:",...s.teacherScript.map((phase,index)=>`${index+1}. ${phase.title}: ${state.phaseNotes[index]||"Sin nota"}`)];
-    const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"}));link.download=`nexus-sesion-${String(s.number).padStart(2,"0")}-bitacora.txt`;link.click();URL.revokeObjectURL(link.href);NEXUS_AUTH.recordTeacherConductorEvent?.("export",s.id).catch(()=>{});
+    const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"}));link.download=`nexus-sesion-${String(s.number).padStart(2,"0")}-bitacora.txt`;link.click();URL.revokeObjectURL(link.href);NEXUS_AUTH.recordTeacherConductorEvent?.({event:"export",sessionId:s.id,phaseIndex:state.phaseIndex}).catch(()=>{});
   }
 
   function updateClock(){
@@ -241,7 +241,7 @@
     $("[data-reopen-session]")?.addEventListener("click",()=>{current.status="active";current.finishedAt=null;persist({immediate:true});hooks.rerender();});
     $("[data-phase-note]")?.addEventListener("input",event=>{current.phaseNotes[current.phaseIndex]=event.target.value;persist();});
     $$('[data-summary]').forEach(input=>input.addEventListener("input",()=>{const key=input.dataset.summary;current.summary[key]=input.type==="number"?Number(input.value):input.value;persist();}));
-    $("[data-planb]")?.addEventListener("change",event=>{const firstUse=!current.summary.planBUsed&&event.target.checked;current.summary.planBUsed=event.target.checked;persist({immediate:true});if(firstUse)NEXUS_AUTH.recordTeacherConductorEvent?.("planB",current.sessionId).catch(()=>{});});
+    $("[data-planb]")?.addEventListener("change",event=>{const firstUse=!current.summary.planBUsed&&event.target.checked;current.summary.planBUsed=event.target.checked;persist({immediate:true});if(firstUse)NEXUS_AUTH.recordTeacherConductorEvent?.({event:"planB",sessionId:current.sessionId,phaseIndex:current.phaseIndex}).catch(()=>{});});
     window.NEXUS19_RESOURCES?.bind?.(document);
     if(current.running)startTicker();
     if(!localStorage.getItem(storageKey(session.id))&&window.NEXUS_AUTH?.loadTeacherSessionLog){

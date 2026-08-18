@@ -62,6 +62,13 @@
   function watchAllTeacherInstrumentResponses(cb,onError){return poll(async()=>{const rows=await request('/teacher/records/instrument');const responses={};rows.forEach(r=>responses[r.id]=r.data);return[{uid:currentUser?.uid||'teacher',responses}]},cb,onError,7000);}
   async function uploadEvidence(file,metadata={}){const f=new FormData();f.append('evidenceId',metadata.evidenceId||String(Date.now()));f.append('title',metadata.title||'Evidencia');f.append('textAnswer',metadata.textAnswer||'');f.append('linkUrl',metadata.linkUrl||'');if(file)f.append('file',file);return request('/evidence/submit',{method:'POST',body:f});}
   async function downloadEvidenceFile(id){const r=await fetch(API+`/evidence/file/${encodeURIComponent(id)}`,{headers:headers(false)});if(!r.ok){let d={};try{d=await r.json()}catch{}throw new Error(d.detail||`Error ${r.status}`)}const blob=await r.blob(),disp=r.headers.get('content-disposition')||'',m=/filename=\"?([^\";]+)\"?/i.exec(disp),name=m?.[1]||'evidencia';const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);return true;}
+  const setEvidenceResubmission=(id,allowed)=>request(`/teacher/evidence/${encodeURIComponent(id)}/resubmission`,{method:'POST',body:JSON.stringify({data:{allowed:!!allowed}})});
+  const sendMessage=data=>request('/messages',{method:'POST',body:JSON.stringify(data)});
+  const getMyMessages=()=>request('/messages/mine');
+  const markMessageRead=id=>request(`/messages/${encodeURIComponent(id)}/read`,{method:'POST'});
+  const getUnreadMessageCount=()=>request('/messages/unread-count');
+  const getCourseDesign=()=>getConfig('evaluation_design');
+  const saveCourseDesign=data=>setConfig('evaluation_design',data);
   const getMyEvidence=()=>request('/evidence/mine');
   const getAllEvidence=()=>request('/teacher/evidence');
   const gradeEvidence=(id,data)=>request(`/teacher/evidence/${encodeURIComponent(id)}/grade`,{method:'POST',body:JSON.stringify(data)});
@@ -73,6 +80,6 @@
   const getTeacherGradebook=()=>request('/teacher/gradebook');
   const exportMyData=()=>request('/privacy/export');
   const requestDataRight=(kind,detail='')=>request('/privacy/request',{method:'POST',body:JSON.stringify({kind,detail})});
-  window.NEXUS_AUTH={api:request,init,signIn,signOut,saveProgress,loadProgress,saveLeaderboard,removeLeaderboard,watchLeaderboard,recordActivity,recordTeacherUsage,watchTeacherUsage,saveTeacherReflection,watchTeacherReflections,saveTeacherSessionLog,loadTeacherSessionLog,watchTeacherSessionLogs,recordTeacherConductorEvent,markLabOpened,watchTeacherTracking,saveExitTicket,uploadEvidence,downloadEvidenceFile,watchPilotConfig,savePilotConfig,saveStudentInstrumentResponse,watchMyStudentInstrumentResponses,saveTeacherInstrumentResponse,watchMyTeacherInstrumentResponses,watchAllStudentInstrumentResponses,watchAllTeacherInstrumentResponses,getMyEvidence,getAllEvidence,gradeEvidence,getConfig,setConfig,getAnalytics,getHealth,getMyGradebook,getTeacherGradebook,exportMyData,requestDataRight,get user(){return currentUser},get role(){return currentRole},get apiBase(){return API},configured:true};
+  window.NEXUS_AUTH={api:request,init,signIn,signOut,saveProgress,loadProgress,saveLeaderboard,removeLeaderboard,watchLeaderboard,recordActivity,recordTeacherUsage,watchTeacherUsage,saveTeacherReflection,watchTeacherReflections,saveTeacherSessionLog,loadTeacherSessionLog,watchTeacherSessionLogs,recordTeacherConductorEvent,markLabOpened,watchTeacherTracking,saveExitTicket,uploadEvidence,downloadEvidenceFile,watchPilotConfig,savePilotConfig,saveStudentInstrumentResponse,watchMyStudentInstrumentResponses,saveTeacherInstrumentResponse,watchMyTeacherInstrumentResponses,watchAllStudentInstrumentResponses,watchAllTeacherInstrumentResponses,getMyEvidence,getAllEvidence,gradeEvidence,setEvidenceResubmission,sendMessage,getMyMessages,markMessageRead,getUnreadMessageCount,getCourseDesign,saveCourseDesign,getConfig,setConfig,getAnalytics,getHealth,getMyGradebook,getTeacherGradebook,exportMyData,requestDataRight,get user(){return currentUser},get role(){return currentRole},get apiBase(){return API},configured:true};
   init();
 })();

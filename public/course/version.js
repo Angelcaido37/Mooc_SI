@@ -1,1 +1,1 @@
-window.NEXUS_VERSION="19 ESTABLE FINAL";
+window.NEXUS_VERSION="19-final-docente";
