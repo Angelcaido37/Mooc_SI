@@ -1,11 +1,11 @@
-import json, os, sqlite3, uuid, shutil, hashlib, csv, io
+import json, os, sqlite3, uuid, shutil, hashlib, csv, io, base64, hmac, re
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Header
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 ROOT=Path(__file__).resolve().parents[1]
 WEB=ROOT/'public'/'course'
@@ -14,13 +14,16 @@ UP=DATA/'uploads'
 DATA.mkdir(parents=True,exist_ok=True)
 UP.mkdir(parents=True,exist_ok=True)
 DB=DATA/'nexus18.sqlite3'
+DATABASE_URL=os.getenv('DATABASE_URL','').strip()
+USE_POSTGRES=DATABASE_URL.startswith(('postgres://','postgresql://'))
 TEACHER_PASSWORD=os.getenv('NEXUS_TEACHER_PASSWORD','cambiar-antes-de-publicar')
 NEXUS_ENV=os.getenv('NEXUS_ENV','development').lower()
 COURSE_CODE=os.getenv('NEXUS_COURSE_CODE','NEXUS18')
 SESSION_HOURS=int(os.getenv('NEXUS_SESSION_HOURS','12'))
-MAX_UPLOAD_MB=int(os.getenv('NEXUS_MAX_UPLOAD_MB','20'))
+MAX_UPLOAD_MB=int(os.getenv('NEXUS_MAX_UPLOAD_MB','2'))
 RETENTION_DAYS=int(os.getenv('NEXUS_RETENTION_DAYS','730'))
-PRIVACY_NOTICE_VERSION=os.getenv('NEXUS_PRIVACY_NOTICE_VERSION','NEXUS18-PRIV-1')
+PRIVACY_NOTICE_VERSION=os.getenv('NEXUS_PRIVACY_NOTICE_VERSION','NEXUS19-PRIV-1')
+SESSION_SECRET=(os.getenv('NEXUS_SESSION_SECRET') or hashlib.sha256(f'{TEACHER_PASSWORD}|{COURSE_CODE}|NEXUS19'.encode()).hexdigest()).encode()
 ALLOWED_EXT={'.pdf','.doc','.docx','.ppt','.pptx','.xls','.xlsx','.csv','.txt','.md','.png','.jpg','.jpeg','.webp','.zip'}
 try: STUDENT_KEYS=json.loads(os.getenv('NEXUS_STUDENT_KEYS','{}'))
 except Exception: STUDENT_KEYS={}
@@ -43,27 +46,87 @@ def gradebook_for(c, uid):
     return {'scores':scores,'weights':weights,'currentAverage':current,'finalAverage':final,'gradedWeight':round(used,1),'provisional':used<99.999,'calculationNote':'El promedio actual sólo pondera categorías con al menos una evidencia evaluada; el promedio final aparece al completar el 100 % del peso.','raw':{'quizzesPassed':quizzes,'masteryChallenges':games,'evidenceGrades':grades}}
 
 
-def conn():
-    c=sqlite3.connect(DB); c.row_factory=sqlite3.Row
-    c.executescript('''
-    CREATE TABLE IF NOT EXISTS users(uid TEXT PRIMARY KEY,name TEXT,email TEXT,role TEXT,created_at TEXT,last_at TEXT);
-    CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,uid TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS progress(uid TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
-    CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,status TEXT,submitted_at TEXT,grade REAL,feedback TEXT,rubric_scores TEXT,graded_at TEXT);
-    CREATE TABLE IF NOT EXISTS config(key TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
-    CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,type TEXT,payload TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS acknowledgements(id TEXT PRIMARY KEY,uid TEXT,indicator_id TEXT,session_id TEXT,statement TEXT,response TEXT,observation TEXT,resource_version TEXT,resource_hash TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,resource_version TEXT,evidence_hash TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT);
-    CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT);
-    CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT);
-    ''')
-    # Migración compatible con bases NEXUS 18.x ya existentes.
-    cols={r['name'] for r in c.execute('PRAGMA table_info(practice_evidence)').fetchall()}
-    if 'resource_version' not in cols: c.execute('ALTER TABLE practice_evidence ADD COLUMN resource_version TEXT')
-    if 'evidence_hash' not in cols: c.execute('ALTER TABLE practice_evidence ADD COLUMN evidence_hash TEXT')
-    return c
+def _sql(sql):
+    return sql.replace('?', '%s') if USE_POSTGRES else sql
+
+class DBConn:
+    def __init__(self):
+        if USE_POSTGRES:
+            try:
+                import psycopg
+                from psycopg.rows import dict_row
+            except Exception as exc:
+                raise RuntimeError('DATABASE_URL está configurada, pero falta psycopg. Instale backend/requirements.txt') from exc
+            self.raw=psycopg.connect(DATABASE_URL,row_factory=dict_row)
+        else:
+            self.raw=sqlite3.connect(DB)
+            self.raw.row_factory=sqlite3.Row
+    def execute(self,sql,params=()):
+        return self.raw.execute(_sql(sql),params)
+    def executescript(self,sql):
+        if USE_POSTGRES:
+            for stmt in [x.strip() for x in sql.split(';') if x.strip()]: self.execute(stmt)
+        else:
+            self.raw.executescript(sql)
+    def __enter__(self): return self
+    def __exit__(self,exc_type,exc,tb):
+        try:
+            self.raw.rollback() if exc_type else self.raw.commit()
+        finally:
+            self.raw.close()
+
+SQLITE_SCHEMA='''
+CREATE TABLE IF NOT EXISTS users(uid TEXT PRIMARY KEY,name TEXT,email TEXT,role TEXT,created_at TEXT,last_at TEXT);
+CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,uid TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS progress(uid TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
+CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BLOB,file_mime TEXT,file_size INTEGER,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade REAL,feedback TEXT,rubric_scores TEXT,graded_at TEXT);
+CREATE TABLE IF NOT EXISTS config(key TEXT PRIMARY KEY,data TEXT,updated_at TEXT);
+CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,type TEXT,payload TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS acknowledgements(id TEXT PRIMARY KEY,uid TEXT,indicator_id TEXT,session_id TEXT,statement TEXT,response TEXT,observation TEXT,resource_version TEXT,resource_hash TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,resource_version TEXT,evidence_hash TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT);
+CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT);
+'''
+POSTGRES_SCHEMA=[
+'''CREATE TABLE IF NOT EXISTS users(uid TEXT PRIMARY KEY,name TEXT,email TEXT,role TEXT,created_at TEXT,last_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,uid TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS progress(uid TEXT PRIMARY KEY,data TEXT,updated_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY,uid TEXT,evidence_id TEXT,title TEXT,text_answer TEXT,link_url TEXT,file_name TEXT,file_path TEXT,file_blob BYTEA,file_mime TEXT,file_size BIGINT,file_sha256 TEXT,status TEXT,submitted_at TEXT,grade DOUBLE PRECISION,feedback TEXT,rubric_scores TEXT,graded_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS config(key TEXT PRIMARY KEY,data TEXT,updated_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS events(id BIGSERIAL PRIMARY KEY,uid TEXT,type TEXT,payload TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS teacher_records(id TEXT PRIMARY KEY,kind TEXT,data TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS acknowledgements(id TEXT PRIMARY KEY,uid TEXT,indicator_id TEXT,session_id TEXT,statement TEXT,response TEXT,observation TEXT,resource_version TEXT,resource_hash TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS practice_evidence(id TEXT PRIMARY KEY,indicator_id TEXT,session_id TEXT,kind TEXT,title TEXT,payload TEXT,resource_version TEXT,evidence_hash TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS privacy_consents(id TEXT PRIMARY KEY,uid TEXT,notice_version TEXT,accepted INTEGER,purpose TEXT,created_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS data_requests(id TEXT PRIMARY KEY,uid TEXT,kind TEXT,status TEXT,detail TEXT,created_at TEXT,resolved_at TEXT)''',
+'''CREATE TABLE IF NOT EXISTS audit_log(id BIGSERIAL PRIMARY KEY,uid TEXT,actor_role TEXT,action TEXT,target TEXT,payload_hash TEXT,created_at TEXT)'''
+]
+
+def init_storage():
+    with DBConn() as c:
+        if USE_POSTGRES:
+            for stmt in POSTGRES_SCHEMA: c.execute(stmt)
+            for stmt in [
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_blob BYTEA',
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_mime TEXT',
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_size BIGINT',
+                'ALTER TABLE evidence ADD COLUMN IF NOT EXISTS file_sha256 TEXT',
+                'ALTER TABLE practice_evidence ADD COLUMN IF NOT EXISTS resource_version TEXT',
+                'ALTER TABLE practice_evidence ADD COLUMN IF NOT EXISTS evidence_hash TEXT'
+            ]: c.execute(stmt)
+        else:
+            c.executescript(SQLITE_SCHEMA)
+            for table, additions in {
+                'practice_evidence':[('resource_version','TEXT'),('evidence_hash','TEXT')],
+                'evidence':[('file_blob','BLOB'),('file_mime','TEXT'),('file_size','INTEGER'),('file_sha256','TEXT')]
+            }.items():
+                cols={r['name'] for r in c.execute(f'PRAGMA table_info({table})').fetchall()}
+                for name,typ in additions:
+                    if name not in cols: c.execute(f'ALTER TABLE {table} ADD COLUMN {name} {typ}')
+
+def conn(): return DBConn()
 
 def now(): return datetime.now(timezone.utc).isoformat()
 def audit(c,uid,role,action,target='',payload=None):
@@ -75,16 +138,29 @@ def deepmerge(a,b):
     for k,v in (b or {}).items(): out[k]=deepmerge(out.get(k,{}),v) if isinstance(v,dict) and isinstance(out.get(k),dict) else v
     return out
 
+def _b64e(raw:bytes): return base64.urlsafe_b64encode(raw).decode().rstrip('=')
+def _b64d(txt:str): return base64.urlsafe_b64decode(txt + '='*((4-len(txt)%4)%4))
+def issue_token(user:dict):
+    ts=int(datetime.now(timezone.utc).timestamp())
+    payload={k:user[k] for k in ('uid','name','email','role')}
+    payload.update({'iat':ts,'exp':ts+SESSION_HOURS*3600,'jti':uuid.uuid4().hex})
+    body=_b64e(json.dumps(payload,separators=(',',':'),ensure_ascii=False).encode())
+    sig=_b64e(hmac.new(SESSION_SECRET,body.encode(),hashlib.sha256).digest())
+    return f'nxs1.{body}.{sig}'
 def user_from(token):
     if not token: raise HTTPException(401,'Sesión requerida')
-    with conn() as c:
-        r=c.execute('SELECT u.* FROM sessions s JOIN users u ON u.uid=s.uid WHERE s.token=?',(token,)).fetchone()
-    if not r: raise HTTPException(401,'Sesión inválida')
-    with conn() as c:
-        sr=c.execute('SELECT created_at FROM sessions WHERE token=?',(token,)).fetchone()
-        if sr and datetime.now(timezone.utc)-datetime.fromisoformat(sr['created_at']) > timedelta(hours=SESSION_HOURS):
-            c.execute('DELETE FROM sessions WHERE token=?',(token,)); raise HTTPException(401,'Sesión expirada')
-    return dict(r)
+    try:
+        prefix,body,sig=token.split('.',2)
+        if prefix!='nxs1': raise ValueError('formato')
+        expected=_b64e(hmac.new(SESSION_SECRET,body.encode(),hashlib.sha256).digest())
+        if not hmac.compare_digest(sig,expected): raise ValueError('firma')
+        data=json.loads(_b64d(body))
+        if int(data.get('exp',0)) < int(datetime.now(timezone.utc).timestamp()): raise HTTPException(401,'Sesión expirada')
+        if data.get('role') not in ('teacher','student'): raise ValueError('rol')
+        return {k:data.get(k,'') for k in ('uid','name','email','role')}
+    except HTTPException: raise
+    except Exception: raise HTTPException(401,'Sesión inválida')
+
 def authz(authorization): return user_from((authorization or '').replace('Bearer ','',1))
 def teacher(authorization):
     u=authz(authorization)
@@ -92,7 +168,7 @@ def teacher(authorization):
     return u
 class Login(BaseModel): role:str; name:str=''; email:str=''; password:str=''; courseCode:str=''; accessKey:str=''; privacyAccepted:bool=False
 class Obj(BaseModel): data:dict
-class Grade(BaseModel): grade:float; feedback:str=''; rubricScores:dict={}; status:str='graded'
+class Grade(BaseModel): grade:float; feedback:str=''; rubricScores:dict=Field(default_factory=dict); status:str='graded'
 
 class Ack(BaseModel):
     indicatorId:str
@@ -107,10 +183,10 @@ class PracticeEvidence(BaseModel):
     sessionId:str=''
     kind:str='system'
     title:str
-    payload:dict={}
-    resourceVersion:str='NEXUS18.2'
+    payload:dict=Field(default_factory=dict)
+    resourceVersion:str='NEXUS19'
 
-app=FastAPI(title='NEXUS 19 Institutional API')
+app=FastAPI(title='NEXUS 19 Stable API')
 _allowed_origins=[x.strip() for x in os.getenv('NEXUS_ALLOWED_ORIGINS','').split(',') if x.strip()]
 if _allowed_origins:
     app.add_middleware(
@@ -124,6 +200,7 @@ if _allowed_origins:
 def production_guard():
     if NEXUS_ENV in ('production','prod') and TEACHER_PASSWORD=='cambiar-antes-de-publicar':
         raise RuntimeError('Defina NEXUS_TEACHER_PASSWORD antes de iniciar NEXUS en producción')
+    init_storage()
 @app.post('/api/auth/login')
 def login(x:Login):
     role='teacher' if x.role=='teacher' else 'student'
@@ -134,10 +211,10 @@ def login(x:Login):
     if role=='student' and STUDENT_KEYS:
         expected=STUDENT_KEYS.get(email)
         if not expected or x.accessKey != expected: raise HTTPException(401,'Clave individual de estudiante incorrecta')
-    uid=('t-' if role=='teacher' else 's-')+uuid.uuid5(uuid.NAMESPACE_DNS,email).hex[:20]; ts=now(); token=uuid.uuid4().hex
+    uid=('t-' if role=='teacher' else 's-')+uuid.uuid5(uuid.NAMESPACE_DNS,email).hex[:20]; ts=now(); token=issue_token({'uid':uid,'name':x.name or ('Docente' if role=='teacher' else 'Estudiante'),'email':email,'role':role})
     with conn() as c:
         c.execute('INSERT INTO users(uid,name,email,role,created_at,last_at) VALUES(?,?,?,?,?,?) ON CONFLICT(uid) DO UPDATE SET name=excluded.name,email=excluded.email,last_at=excluded.last_at',(uid,x.name or ('Docente' if role=='teacher' else 'Estudiante'),email,role,ts,ts))
-        c.execute('INSERT INTO sessions(token,uid,created_at) VALUES(?,?,?)',(token,uid,ts)); audit(c,uid,role,'login','session',{'course':COURSE_CODE})
+        audit(c,uid,role,'login','session',{'course':COURSE_CODE})
         if role=='student':
             c.execute('INSERT INTO privacy_consents(id,uid,notice_version,accepted,purpose,created_at) VALUES(?,?,?,?,?,?)',(uuid.uuid4().hex,uid,PRIVACY_NOTICE_VERSION,1,'academic_course',ts)); audit(c,uid,role,'privacy_notice_ack',PRIVACY_NOTICE_VERSION,{'accepted':True})
     return {'token':token,'user':{'uid':uid,'displayName':x.name or ('Docente' if role=='teacher' else 'Estudiante'),'email':email},'role':role}
@@ -146,8 +223,6 @@ def me(authorization:str|None=Header(None)):
     u=authz(authorization); return {'user':{'uid':u['uid'],'displayName':u['name'],'email':u['email']},'role':u['role']}
 @app.post('/api/auth/logout')
 def logout(authorization:str|None=Header(None)):
-    t=(authorization or '').replace('Bearer ','',1)
-    with conn() as c:c.execute('DELETE FROM sessions WHERE token=?',(t,))
     return {'ok':True}
 @app.get('/api/progress')
 def get_progress(authorization:str|None=Header(None)):
@@ -175,49 +250,94 @@ def students(authorization:str|None=Header(None)):
             p=c.execute('SELECT data,updated_at FROM progress WHERE uid=?',(r['uid'],)).fetchone(); ev=c.execute('SELECT COUNT(*) n FROM evidence WHERE uid=?',(r['uid'],)).fetchone()['n']
             out.append({'uid':r['uid'],'displayName':r['name'],'email':r['email'],'lastActivityAt':r['last_at'],'updatedAt':r['last_at'],'progress':json.loads(p['data']) if p else {},'evidenceCount':ev})
     return out
+
+@app.get('/api/leaderboard')
+def public_leaderboard(authorization:str|None=Header(None)):
+    authz(authorization)
+    with conn() as c:
+        rows=c.execute("SELECT uid,data FROM progress").fetchall(); out=[]
+        for r in rows:
+            try: p=json.loads(r['data'] or '{}')
+            except Exception: p={}
+            item=p.get('leaderboard')
+            if item and isinstance(item,dict) and item.get('alias'):
+                out.append({'uid':r['uid'],'alias':str(item.get('alias'))[:24],'team':item.get('team'),'avatar':item.get('avatar'),'level':item.get('level'), 'weeklyKey':item.get('weeklyKey'),'weeklyLessons':item.get('weeklyLessons',0),'weeklyBonuses':item.get('weeklyBonuses',0),'weeklyScore':item.get('weeklyScore',0),'goalMet':bool(item.get('goalMet'))})
+    return out
 @app.get('/api/evidence/mine')
 def mine(authorization:str|None=Header(None)):
     u=authz(authorization)
-    with conn() as c: rows=c.execute('SELECT * FROM evidence WHERE uid=? ORDER BY submitted_at DESC',(u['uid'],)).fetchall()
+    fields='id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_mime,file_size,file_sha256,status,submitted_at,grade,feedback,rubric_scores,graded_at'
+    with conn() as c: rows=c.execute(f'SELECT {fields} FROM evidence WHERE uid=? ORDER BY submitted_at DESC',(u['uid'],)).fetchall()
     return [dict(r) | {'rubric_scores':json.loads(r['rubric_scores'] or '{}')} for r in rows]
+
+def _safe_http_url(value:str):
+    value=(value or '').strip()
+    if not value: return ''
+    if not re.match(r'^https?://',value,re.I): raise HTTPException(400,'El enlace debe iniciar con http:// o https://')
+    return value
+
 @app.post('/api/evidence/submit')
 def submit_evidence(evidenceId:str=Form(...),title:str=Form(''),textAnswer:str=Form(''),linkUrl:str=Form(''),file:UploadFile|None=File(None),authorization:str|None=Header(None)):
     u=authz(authorization)
     if u['role']!='student': raise HTTPException(403,'Solo estudiantes entregan evidencias')
-    eid=f"{u['uid']}:{evidenceId}"; fp=''; fn=''
+    eid=f"{u['uid']}:{evidenceId}"; fn=''; blob=None; mime=''; size=0; digest=''; linkUrl=_safe_http_url(linkUrl)
     if file and file.filename:
         ext=Path(file.filename).suffix.lower()
         if ext not in ALLOWED_EXT: raise HTTPException(400,'Tipo de archivo no permitido')
-        safe=''.join(ch for ch in file.filename if ch.isalnum() or ch in '._-')[:120]; dest=UP/f"{uuid.uuid4().hex}-{safe}"; total=0
-        with dest.open('wb') as out:
-            while True:
-                chunk=file.file.read(1024*1024)
-                if not chunk: break
-                total+=len(chunk)
-                if total > MAX_UPLOAD_MB*1024*1024:
-                    out.close(); dest.unlink(missing_ok=True); raise HTTPException(413,f'Archivo mayor a {MAX_UPLOAD_MB} MB')
-                out.write(chunk)
-        fp=str(dest.relative_to(DATA)); fn=file.filename
+        fn=Path(file.filename).name[:160]
+        buf=io.BytesIO()
+        while True:
+            chunk=file.file.read(1024*1024)
+            if not chunk: break
+            size+=len(chunk)
+            if size > MAX_UPLOAD_MB*1024*1024: raise HTTPException(413,f'Archivo mayor a {MAX_UPLOAD_MB} MB')
+            buf.write(chunk)
+        blob=buf.getvalue(); mime=(file.content_type or 'application/octet-stream')[:120]; digest=hashlib.sha256(blob).hexdigest()
     ts=now()
-    with conn() as c:c.execute('''INSERT INTO evidence(id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,status,submitted_at,rubric_scores) VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title,text_answer=excluded.text_answer,link_url=excluded.link_url,file_name=CASE WHEN excluded.file_name<>'' THEN excluded.file_name ELSE evidence.file_name END,file_path=CASE WHEN excluded.file_path<>'' THEN excluded.file_path ELSE evidence.file_path END,status='submitted',submitted_at=excluded.submitted_at''',(eid,u['uid'],evidenceId,title,textAnswer,linkUrl,fn,fp,'submitted',ts,'{}'))
-    return {'ok':True,'id':eid,'submittedAt':ts}
+    with conn() as c:
+        c.execute('''INSERT INTO evidence(id,uid,evidence_id,title,text_answer,link_url,file_name,file_path,file_blob,file_mime,file_size,file_sha256,status,submitted_at,rubric_scores)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+        title=excluded.title,text_answer=excluded.text_answer,link_url=excluded.link_url,
+        file_name=CASE WHEN excluded.file_name<>'' THEN excluded.file_name ELSE evidence.file_name END,
+        file_blob=CASE WHEN excluded.file_name<>'' THEN excluded.file_blob ELSE evidence.file_blob END,
+        file_mime=CASE WHEN excluded.file_name<>'' THEN excluded.file_mime ELSE evidence.file_mime END,
+        file_size=CASE WHEN excluded.file_name<>'' THEN excluded.file_size ELSE evidence.file_size END,
+        file_sha256=CASE WHEN excluded.file_name<>'' THEN excluded.file_sha256 ELSE evidence.file_sha256 END,
+        status='submitted',submitted_at=excluded.submitted_at''',
+        (eid,u['uid'],evidenceId,title,textAnswer,linkUrl,fn,'',blob,mime,size,digest,'submitted',ts,'{}'))
+        audit(c,u['uid'],'student','evidence_submitted',eid,{'evidenceId':evidenceId,'fileName':fn,'fileSha256':digest,'fileSize':size})
+    return {'ok':True,'id':eid,'submittedAt':ts,'fileSha256':digest or None}
+
 @app.get('/api/teacher/evidence')
 def all_evidence(authorization:str|None=Header(None)):
     teacher(authorization)
-    with conn() as c: rows=c.execute('SELECT e.*,u.name student_name,u.email student_email FROM evidence e JOIN users u ON u.uid=e.uid ORDER BY e.submitted_at DESC').fetchall()
+    fields='e.id,e.uid,e.evidence_id,e.title,e.text_answer,e.link_url,e.file_name,e.file_path,e.file_mime,e.file_size,e.file_sha256,e.status,e.submitted_at,e.grade,e.feedback,e.rubric_scores,e.graded_at,u.name student_name,u.email student_email'
+    with conn() as c: rows=c.execute(f'SELECT {fields} FROM evidence e JOIN users u ON u.uid=e.uid ORDER BY e.submitted_at DESC').fetchall()
     return [dict(r)|{'rubric_scores':json.loads(r['rubric_scores'] or '{}')} for r in rows]
+
 @app.post('/api/teacher/evidence/{eid}/grade')
 def grade(eid:str,x:Grade,authorization:str|None=Header(None)):
-    teacher(authorization)
+    u=teacher(authorization)
+    if not 0 <= float(x.grade) <= 100: raise HTTPException(400,'La calificación debe estar entre 0 y 100')
     with conn() as c:
-        c.execute('UPDATE evidence SET grade=?,feedback=?,rubric_scores=?,status=?,graded_at=? WHERE id=?',(x.grade,x.feedback,json.dumps(x.rubricScores),x.status,now(),eid)); audit(c,'teacher','teacher','grade_evidence',eid,{'grade':x.grade,'status':x.status})
+        exists=c.execute('SELECT id FROM evidence WHERE id=?',(eid,)).fetchone()
+        if not exists: raise HTTPException(404,'Evidencia no encontrada')
+        c.execute('UPDATE evidence SET grade=?,feedback=?,rubric_scores=?,status=?,graded_at=? WHERE id=?',(x.grade,x.feedback,json.dumps(x.rubricScores),x.status,now(),eid)); audit(c,u['uid'],'teacher','grade_evidence',eid,{'grade':x.grade,'status':x.status})
     return {'ok':True}
+
 @app.get('/api/evidence/file/{eid}')
 def evidence_file(eid:str,token:str='',authorization:str|None=Header(None)):
     u=authz(authorization or (f'Bearer {token}' if token else None))
-    with conn() as c:r=c.execute('SELECT * FROM evidence WHERE id=?',(eid,)).fetchone()
-    if not r or (u['role']!='teacher' and r['uid']!=u['uid']): raise HTTPException(404)
-    p=DATA/r['file_path']; return FileResponse(p,filename=r['file_name'])
+    with conn() as c:r=c.execute('SELECT uid,file_name,file_path,file_blob,file_mime FROM evidence WHERE id=?',(eid,)).fetchone()
+    if not r or (u['role']!='teacher' and r['uid']!=u['uid']): raise HTTPException(404,'Archivo no encontrado')
+    if r['file_blob'] is not None:
+        blob=bytes(r['file_blob']); headers={'Content-Disposition':f'attachment; filename="{Path(r['file_name'] or "evidencia.bin").name}"'}
+        return Response(content=blob,media_type=r['file_mime'] or 'application/octet-stream',headers=headers)
+    if r['file_path']:
+        p=DATA/r['file_path']
+        if p.exists(): return FileResponse(p,filename=r['file_name'])
+    raise HTTPException(404,'El archivo ya no está disponible')
+
 @app.get('/api/config/{key}')
 def get_config(key:str,authorization:str|None=Header(None)):
     authz(authorization)
@@ -254,7 +374,7 @@ def save_ack(x:Ack,authorization:str|None=Header(None)):
     if u['role']!='student': raise HTTPException(403,'Solo estudiantes confirman recepción o percepción')
     ts=now(); aid=uuid.uuid4().hex
     if x.response not in ('confirm','cannot_confirm','observation'): raise HTTPException(400,'Respuesta inválida')
-    version=x.resourceVersion or 'NEXUS18'
+    version=x.resourceVersion or 'NEXUS19'
     content_hash=x.resourceHash or hashlib.sha256(f'{version}|{x.indicatorId}|{x.sessionId}|{x.statement}'.encode('utf-8')).hexdigest()
     with conn() as c:
         c.execute('INSERT INTO acknowledgements(id,uid,indicator_id,session_id,statement,response,observation,resource_version,resource_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)',(aid,u['uid'],x.indicatorId,x.sessionId,x.statement,x.response,x.observation,version,content_hash,ts))
@@ -280,7 +400,7 @@ def traceability(authorization:str|None=Header(None)):
 @app.post('/api/teacher/practice-evidence')
 def save_practice_evidence(x:PracticeEvidence,authorization:str|None=Header(None)):
     u=teacher(authorization); ts=now(); eid=uuid.uuid4().hex
-    version=(x.resourceVersion or 'NEXUS18.2').strip()
+    version=(x.resourceVersion or 'NEXUS19').strip()
     canonical=json.dumps({'indicatorId':x.indicatorId,'sessionId':x.sessionId,'kind':x.kind,'title':x.title,'payload':x.payload,'resourceVersion':version},sort_keys=True,ensure_ascii=False,separators=(',',':'))
     evidence_hash=hashlib.sha256(canonical.encode('utf-8')).hexdigest()
     with conn() as c:
@@ -355,14 +475,19 @@ def teacher_data_requests(authorization:str|None=Header(None)):
 
 @app.post('/api/teacher/backup')
 def create_backup(authorization:str|None=Header(None)):
-    teacher(authorization); backups=DATA/'backups'; backups.mkdir(exist_ok=True); stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'); dest=backups/f'nexus18-{stamp}.sqlite3'
+    teacher(authorization)
+    if USE_POSTGRES:
+        return {'ok':True,'managed':True,'storage':'PostgreSQL','createdAt':now(),'note':'La persistencia está en PostgreSQL. Use las funciones de restauración/backup del proveedor para copias físicas; NEXUS mantiene exportaciones académicas desde el portal.'}
+    backups=DATA/'backups'; backups.mkdir(exist_ok=True); stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'); dest=backups/f'nexus19-{stamp}.sqlite3'
     src=sqlite3.connect(DB); dst=sqlite3.connect(dest); src.backup(dst); dst.close(); src.close()
     digest=hashlib.sha256(dest.read_bytes()).hexdigest(); manifest=dest.with_suffix('.sha256'); manifest.write_text(digest+'  '+dest.name+'\n')
-    return {'ok':True,'file':dest.name,'sha256':digest,'createdAt':now()}
+    return {'ok':True,'file':dest.name,'sha256':digest,'createdAt':now(),'warning':'En Render Free este archivo local puede perderse en un redeploy; configure DATABASE_URL para persistencia externa.'}
 
 @app.get('/api/teacher/backups')
 def list_backups(authorization:str|None=Header(None)):
-    teacher(authorization); backups=DATA/'backups'; backups.mkdir(exist_ok=True)
+    teacher(authorization)
+    if USE_POSTGRES: return []
+    backups=DATA/'backups'; backups.mkdir(exist_ok=True)
     return [{'file':p.name,'bytes':p.stat().st_size,'modifiedAt':datetime.fromtimestamp(p.stat().st_mtime,timezone.utc).isoformat(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(backups.glob('*.sqlite3'),reverse=True)]
 
 @app.get('/api/teacher/research-export')
@@ -374,7 +499,7 @@ def research_export(authorization:str|None=Header(None)):
             g=gradebook_for(c,u['uid']); pr=c.execute('SELECT data FROM progress WHERE uid=?',(u['uid'],)).fetchone(); pdata=json.loads(pr['data']) if pr else {}
             pre=(pdata.get('measurementResponses') or {}).get('pretest',{}); post=(pdata.get('measurementResponses') or {}).get('posttest',{})
             rows.append({'uid':u['uid'],'name':u['name'],'email':u['email'],'last_at':u['last_at'],'pretest':pre,'posttest':post,'gradebook':g})
-    return {'schemaVersion':'NEXUS18-RESEARCH-1','generatedAt':now(),'students':rows,'warning':'Participación, desempeño, aprendizaje y percepción deben analizarse por separado. Este archivo no demuestra causalidad.'}
+    return {'schemaVersion':'NEXUS19-RESEARCH-1','generatedAt':now(),'students':rows,'warning':'Participación, desempeño, aprendizaje y percepción deben analizarse por separado. Este archivo no demuestra causalidad.'}
 
 @app.get('/api/teacher/audit-log')
 def audit_log(authorization:str|None=Header(None)):
@@ -383,16 +508,31 @@ def audit_log(authorization:str|None=Header(None)):
     return [dict(r) for r in rows]
 
 @app.get('/health')
-def health(): return {
-    'ok':True,
-    'product':'NEXUS 19',
-    'storage':'SQLite',
-    'dataDir':str(DATA),
-    'environment':NEXUS_ENV,
-    'teacherPasswordConfigured':TEACHER_PASSWORD!='cambiar-antes-de-publicar',
-    'retentionDays':RETENTION_DAYS,
-    'privacyNoticeVersion':PRIVACY_NOTICE_VERSION,
-    'allowedOrigins':_allowed_origins,
-    'deployment':'GitHub Pages + Render'
-}
+def health():
+    db_ok=True; db_error=''
+    try:
+        with conn() as c: c.execute('SELECT 1').fetchone()
+    except Exception as exc:
+        db_ok=False; db_error=str(exc)[:220]
+    return {
+        'ok':db_ok,
+        'product':'NEXUS 19',
+        'release':'stable',
+        'storage':'PostgreSQL' if USE_POSTGRES else 'SQLite',
+        'persistent':USE_POSTGRES,
+        'fileStorage':'database',
+        'dataDir':None if USE_POSTGRES else str(DATA),
+        'environment':NEXUS_ENV,
+        'teacherPasswordConfigured':TEACHER_PASSWORD!='cambiar-antes-de-publicar',
+        'sessionMode':'signed-stateless',
+        'retentionDays':RETENTION_DAYS,
+        'privacyNoticeVersion':PRIVACY_NOTICE_VERSION,
+        'allowedOrigins':_allowed_origins,
+        'deployment':'GitHub Pages + Render',
+        'databaseOk':db_ok,
+        'databaseError':db_error or None,
+        'productionReady':bool(db_ok and USE_POSTGRES and TEACHER_PASSWORD!='cambiar-antes-de-publicar' and _allowed_origins),
+        'warning':None if USE_POSTGRES else 'SQLite local es apropiado sólo para pruebas; configure DATABASE_URL antes de trabajar con datos reales.'
+    }
+
 app.mount('/',StaticFiles(directory=WEB,html=True),name='course')

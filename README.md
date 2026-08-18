@@ -31,7 +31,7 @@ Render
   └─ FastAPI: backend/app.py
           │
           ▼
-Persistencia actual del piloto: SQLite
+Persistencia recomendada: PostgreSQL externo (Neon)
 ```
 
 ### GitHub Pages
@@ -65,15 +65,17 @@ NEXUS_COURSE_CODE=NEXUS18
 NEXUS_TEACHER_PASSWORD=<secreto>
 NEXUS_SESSION_HOURS=12
 NEXUS_RETENTION_DAYS=730
-NEXUS_PRIVACY_NOTICE_VERSION=NEXUS18-PRIV-1
+NEXUS_PRIVACY_NOTICE_VERSION=NEXUS19-PRIV-1
+NEXUS_SESSION_SECRET=<secreto aleatorio estable>
+DATABASE_URL=<cadena PostgreSQL de Neon>
 NEXUS_ALLOWED_ORIGINS=https://angelcaido37.github.io
 ```
 
 `NEXUS_COURSE_CODE=NEXUS18`, el nombre del archivo SQLite y la clave local `nexus18-token` se conservan por compatibilidad con los datos y accesos ya configurados; **no significan que el producto siga siendo NEXUS 18**.
 
-## Persistencia: advertencia importante
+## Persistencia estable
 
-La edición actual conserva SQLite para no romper el piloto existente. El disco local de un servicio gratuito no debe asumirse como persistencia institucional definitiva. Antes de usar NEXUS con calificaciones y evidencias reales a escala, migre la base y los archivos a almacenamiento persistente externo y pruebe respaldo/restauración.
+NEXUS 19 puede arrancar con SQLite para pruebas locales, pero en Render debe configurarse `DATABASE_URL`. Cuando existe esa variable, usuarios, progreso, instrumentos, evidencias, archivos de evidencia, calificaciones, trazabilidad y auditoría se guardan en PostgreSQL. El endpoint `/health` indica `persistent: true` y `productionReady: true` cuando la configuración crítica está completa. Los archivos pequeños de evidencia se almacenan como datos binarios en la misma base para no depender del disco efímero de Render.
 
 ## Ejecución local
 
@@ -86,7 +88,7 @@ PowerShell:
 ```powershell
 $env:NEXUS_TEACHER_PASSWORD="una-contraseña-segura"
 $env:NEXUS_COURSE_CODE="NEXUS18"
-python run_nexus18.py
+python run_nexus19.py
 ```
 
 macOS/Linux:
@@ -94,7 +96,7 @@ macOS/Linux:
 ```bash
 export NEXUS_TEACHER_PASSWORD="una-contraseña-segura"
 export NEXUS_COURSE_CODE="NEXUS18"
-python run_nexus18.py
+python run_nexus19.py
 ```
 
 Abra `http://localhost:8000`.
@@ -105,7 +107,7 @@ Abra `http://localhost:8000`.
 npm test
 ```
 
-La suite incluye regresiones de NEXUS 15–18.x y pruebas específicas de la arquitectura pedagógica de NEXUS 19: aprovisionamiento de las 26 sesiones, recursos contextuales, motor interactivo y separación de respuestas privadas del docente.
+La suite incluye regresiones históricas y pruebas específicas de NEXUS 19. La edición estable añade verificación de sesiones firmadas, rutas remotas, persistencia PostgreSQL, evidencia binaria, leaderboard seguro y descargas autenticadas. Consulte `NEXUS19_ESTABLE_LEEME.md` antes de usar datos reales.
 
 Consulte también:
 

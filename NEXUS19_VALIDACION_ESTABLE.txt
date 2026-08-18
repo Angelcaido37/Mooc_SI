@@ -1,0 +1,25 @@
+NEXUS 19 · VALIDACIÓN DE ESTABILIDAD
+Fecha: 2026-08-17
+
+Validaciones automatizadas:
+- 59 pruebas Node de regresión/arquitectura: deben aprobar 59/59.
+- Compilación Python de backend/app.py.
+- Smoke test local FastAPI:
+  * /health
+  * login docente
+  * login estudiante
+  * /auth/me
+  * persistencia de progreso
+  * leaderboard anonimizado
+  * acuse de trazabilidad + SHA-256
+  * entrega de evidencia con archivo
+  * listado docente de evidencias
+  * descarga autenticada del archivo
+  * calificación
+  * sesión firmada después de eliminar la tabla de sesiones
+
+Limitación que requiere configuración externa:
+- La prueba local usa SQLite. La persistencia PostgreSQL está implementada por DATABASE_URL, pero debe validarse en el despliegue real de Neon + Render.
+
+Criterio de salida a datos reales:
+/health debe informar databaseOk=true, persistent=true y productionReady=true.

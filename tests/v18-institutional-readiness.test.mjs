@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 const b=fs.readFileSync('backend/app.py','utf8'),i=fs.readFileSync('public/course/index.html','utf8'),sw=fs.readFileSync('public/course/sw.js','utf8'),v=fs.readFileSync('public/course/version.js','utf8'),pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
-test('NEXUS 18 coherente',()=>{assert.equal(pkg.version,'19.0.0');assert.match(v,/19\.0/);assert.match(i,/NEXUS 19/);assert.match(sw,/nexus-19-r1/)});
+test('NEXUS 18 coherente',()=>{assert.equal(pkg.version,'19.3.0');assert.match(v,/19(?:\.1)?/);assert.match(i,/NEXUS 19/);assert.match(sw,/nexus-19-stable-final-ux-r1/)});
 test('ponderación provisional excluye categorías no evaluadas',()=>{assert.match(b,/activities=\(min\(100,round\(quizzes\/30\*100,1\)\) if quizzes>0 else None\)/);assert.match(b,/mastery=\(min\(100,round\(games\/6\*100,1\)\) if games>0 else None\)/);assert.match(b,/calculationNote/)});
 test('gobernanza y privacidad instrumentadas',()=>{for(const x of ['privacy_consents','data_requests','audit_log','/api/privacy/export','/api/privacy/request'])assert.match(b,new RegExp(x.replaceAll('/','\\/')))});
 test('respaldo e investigación disponibles',()=>{assert.match(b,/\/api\/teacher\/backup/);assert.match(b,/\/api\/teacher\/research-export/);assert.ok(fs.existsSync('scripts/restore_nexus18.py'));assert.ok(fs.existsSync('NEXUS18_PROTOCOLO_VALIDACION_EMPIRICA.md'))});

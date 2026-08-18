@@ -19,6 +19,6 @@ test('portal docente enlaza al estudiante vigente',()=>{
   assert.doesNotMatch(teacher,/href="student\.html"/);
 });
 test('service worker invalida caché y contempla alias heredado',()=>{
-  assert.match(sw,/nexus-19-r1/);
+  assert.match(sw,/nexus-19-stable-final-ux-r1/);
   assert.match(sw,/student\.html/);
 });
